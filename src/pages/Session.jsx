@@ -10,6 +10,7 @@ import OrbitPet from '../components/pet/OrbitPet';
 import { mockFocus } from '../data/mockData';
 import { OBSERVATION_TYPES } from '../data/observationData';
 import { observationService } from '../services/observationService';
+import { sessionsApi } from '../services/api/sessionsApi';
 import { useSession } from '../hooks/useSession';
 
 export default function Session() {
@@ -23,6 +24,7 @@ export default function Session() {
 
   // Persistent Session ID for telemetry tracking across lifecycle
   const sessionIdRef = useRef(`sess_${Date.now()}`);
+  const backendSessionIdRef = useRef(null);
 
   // Timer interval effect
   useEffect(() => {
@@ -54,10 +56,25 @@ export default function Session() {
   const elapsedSeconds = INITIAL_SECONDS - timeLeft;
   const progressPercent = Math.min(Math.round((elapsedSeconds / INITIAL_SECONDS) * 100), 100);
 
-  const handleStart = () => {
+  const handleStart = async () => {
     setStatus('running');
+
+    // 1. Persist Focus Session via sessionsApi
+    try {
+      const res = await sessionsApi.createSession({
+        taskTitle: mockFocus.activeFocusItem.title,
+        plannedDurationMinutes: 45,
+        actualDurationMinutes: 0,
+        status: 'running',
+      });
+      if (res?.data?.id) {
+        backendSessionIdRef.current = res.data.id;
+      }
+    } catch (err) {
+      console.warn('[Session] Backend session start error:', err.message);
+    }
     
-    // Record SESSION_STARTED Observation Telemetry
+    // 2. Record SESSION_STARTED Observation Telemetry via observationService
     observationService.recordObservation({
       type: OBSERVATION_TYPES.SESSION_STARTED,
       activity: {
@@ -68,7 +85,7 @@ export default function Session() {
       context: {
         page: '/session',
         taskId: 2,
-        sessionId: sessionIdRef.current,
+        sessionId: backendSessionIdRef.current || sessionIdRef.current,
         sessionStatus: 'running',
       },
       metadata: {
@@ -78,21 +95,35 @@ export default function Session() {
     });
   };
 
-  const handlePause = () => {
+  const handlePause = async () => {
     setStatus('paused');
 
-    // Record SESSION_PAUSED Observation Telemetry
+    const minutesSpent = Math.max(1, Math.round(elapsedSeconds / 60));
+
+    // 1. Update Focus Session via sessionsApi
+    if (backendSessionIdRef.current) {
+      try {
+        await sessionsApi.updateSession(backendSessionIdRef.current, {
+          status: 'paused',
+          actualDurationMinutes: minutesSpent,
+        });
+      } catch (err) {
+        console.warn('[Session] Backend session pause error:', err.message);
+      }
+    }
+
+    // 2. Record SESSION_PAUSED Observation Telemetry via observationService
     observationService.recordObservation({
       type: OBSERVATION_TYPES.SESSION_PAUSED,
       activity: {
         name: mockFocus.activeFocusItem.title,
         category: 'Practice',
-        duration: Math.max(1, Math.round(elapsedSeconds / 60)),
+        duration: minutesSpent,
       },
       context: {
         page: '/session',
         taskId: 2,
-        sessionId: sessionIdRef.current,
+        sessionId: backendSessionIdRef.current || sessionIdRef.current,
         sessionStatus: 'paused',
       },
       metadata: {
@@ -102,21 +133,34 @@ export default function Session() {
     });
   };
 
-  const handleResume = () => {
+  const handleResume = async () => {
     setStatus('running');
 
-    // Record SESSION_RESUMED Observation Telemetry
+    const minutesSpent = Math.max(1, Math.round(elapsedSeconds / 60));
+
+    // 1. Update Focus Session via sessionsApi
+    if (backendSessionIdRef.current) {
+      try {
+        await sessionsApi.updateSession(backendSessionIdRef.current, {
+          status: 'running',
+        });
+      } catch (err) {
+        console.warn('[Session] Backend session resume error:', err.message);
+      }
+    }
+
+    // 2. Record SESSION_RESUMED Observation Telemetry via observationService
     observationService.recordObservation({
       type: OBSERVATION_TYPES.SESSION_RESUMED,
       activity: {
         name: mockFocus.activeFocusItem.title,
         category: 'Practice',
-        duration: Math.max(1, Math.round(elapsedSeconds / 60)),
+        duration: minutesSpent,
       },
       context: {
         page: '/session',
         taskId: 2,
-        sessionId: sessionIdRef.current,
+        sessionId: backendSessionIdRef.current || sessionIdRef.current,
         sessionStatus: 'running',
       },
       metadata: {
@@ -126,12 +170,25 @@ export default function Session() {
     });
   };
 
-  const handleComplete = (mins) => {
+  const handleComplete = async (mins) => {
     const minutesSpent = mins || Math.max(1, Math.round(elapsedSeconds / 60));
     setCompletedDuration(minutesSpent);
     setStatus('completed');
+
+    // 1. Update Focus Session via sessionsApi
+    if (backendSessionIdRef.current) {
+      try {
+        await sessionsApi.updateSession(backendSessionIdRef.current, {
+          status: 'completed',
+          actualDurationMinutes: minutesSpent,
+          focusScore: 85,
+        });
+      } catch (err) {
+        console.warn('[Session] Backend session complete error:', err.message);
+      }
+    }
     
-    // 1. Record SESSION_COMPLETED Observation Telemetry
+    // 2. Record SESSION_COMPLETED Observation Telemetry via observationService
     observationService.recordObservation({
       type: OBSERVATION_TYPES.SESSION_COMPLETED,
       activity: {
@@ -142,7 +199,7 @@ export default function Session() {
       context: {
         page: '/session',
         taskId: 2,
-        sessionId: sessionIdRef.current,
+        sessionId: backendSessionIdRef.current || sessionIdRef.current,
         sessionStatus: 'completed',
       },
       metadata: {
@@ -152,7 +209,7 @@ export default function Session() {
       },
     });
 
-    // 2. Save session to localStorage & update state via API/hook
+    // 3. Update state via hook
     finishSession({
       duration: minutesSpent,
       focusScore: 85,

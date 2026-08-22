@@ -1,7 +1,11 @@
 import React from 'react';
-import { Bell, Settings, Flame, User } from 'lucide-react';
+import { Bell, Settings, Flame, User, LogOut } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 
-export default function Topbar({ userName = 'Bhuvan', streakDays = 7 }) {
+export default function Topbar({ userName, streakDays = 7 }) {
+  const { user, logout } = useAuth();
+  const activeName = user?.name || userName || 'Bhuvan';
+
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return 'Good morning';
@@ -14,7 +18,7 @@ export default function Topbar({ userName = 'Bhuvan', streakDays = 7 }) {
       {/* Greeting Title */}
       <div className="flex items-center gap-3 ml-10 lg:ml-0">
         <h2 className="text-sm lg:text-base font-semibold text-slate-200 font-heading">
-          {getGreeting()}, <span className="text-indigo-300 font-bold">{userName}</span>
+          {getGreeting()}, <span className="text-indigo-300 font-bold">{activeName}</span>
         </h2>
       </div>
 
@@ -41,6 +45,16 @@ export default function Topbar({ userName = 'Bhuvan', streakDays = 7 }) {
           aria-label="Settings"
         >
           <Settings size={17} />
+        </button>
+
+        {/* Logout Button */}
+        <button
+          onClick={logout}
+          className="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20 transition-all flex items-center gap-1 text-xs"
+          title="Sign Out"
+          aria-label="Sign Out"
+        >
+          <LogOut size={17} />
         </button>
 
         {/* Profile Avatar */}

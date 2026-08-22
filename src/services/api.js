@@ -12,6 +12,7 @@ import {
 } from '../data/mockData';
 import { OBSERVATION_TYPES } from '../data/observationData';
 import { observationService } from './observationService';
+import tasksApi from './api/tasksApi.js';
 
 const STORAGE_KEYS = {
   SESSIONS: 'orbit_completed_sessions',
@@ -69,22 +70,55 @@ export const api = {
 
   // Tasks API
   getTasks: async () => {
-    return getStorageItem(STORAGE_KEYS.TASKS, mockTasks);
+    try {
+      const res = await tasksApi.getTasks();
+      const rawTasks = res?.data || res || [];
+      return rawTasks.map(t => ({
+        id: t.id,
+        title: t.title,
+        status: t.status || (t.completed ? 'completed' : 'pending'),
+        completed: t.status === 'completed' || Boolean(t.completed),
+        category: t.category || t.difficulty || 'General',
+        difficulty: t.difficulty || 'medium',
+      }));
+    } catch (err) {
+      console.warn('[API Service] Backend tasks fetch fallback to local storage:', err.message);
+      return getStorageItem(STORAGE_KEYS.TASKS, mockTasks);
+    }
   },
 
   createTask: async (taskData) => {
-    const tasks = getStorageItem(STORAGE_KEYS.TASKS, mockTasks);
-    const newTask = {
-      id: Date.now(),
-      title: taskData.title || 'Untitled Task',
-      completed: false,
-      category: taskData.category || 'General',
-      difficulty: taskData.difficulty || 'medium',
-      ...taskData,
-    };
-
-    const updatedTasks = [newTask, ...tasks];
-    setStorageItem(STORAGE_KEYS.TASKS, updatedTasks);
+    let newTask;
+    try {
+      const res = await tasksApi.createTask({
+        title: taskData.title || 'Untitled Task',
+        category: taskData.category || 'General',
+        difficulty: taskData.difficulty || 'medium',
+        status: 'pending',
+      });
+      const data = res?.data || res;
+      newTask = {
+        id: data.id,
+        title: data.title,
+        status: data.status || 'pending',
+        completed: data.status === 'completed',
+        category: data.category || data.difficulty || 'General',
+        difficulty: data.difficulty || 'medium',
+      };
+    } catch (err) {
+      console.warn('[API Service] Backend task creation fallback:', err.message);
+      const tasks = getStorageItem(STORAGE_KEYS.TASKS, mockTasks);
+      newTask = {
+        id: Date.now(),
+        title: taskData.title || 'Untitled Task',
+        completed: false,
+        status: 'pending',
+        category: taskData.category || 'General',
+        difficulty: taskData.difficulty || 'medium',
+        ...taskData,
+      };
+      setStorageItem(STORAGE_KEYS.TASKS, [newTask, ...tasks]);
+    }
 
     // Record TASK_CREATED Observation
     observationService.recordObservation({
@@ -106,62 +140,87 @@ export const api = {
   },
 
   startTask: async (taskId) => {
-    const tasks = getStorageItem(STORAGE_KEYS.TASKS, mockTasks);
-    const targetTask = tasks.find(t => t.id === taskId);
-    if (!targetTask) return null;
+    try {
+      const res = await tasksApi.updateTask(taskId, { status: 'in_progress' });
+      const targetTask = res?.data || res;
 
-    // Record TASK_STARTED Observation
-    observationService.recordObservation({
-      type: OBSERVATION_TYPES.TASK_STARTED,
-      activity: {
-        name: targetTask.title,
-        category: targetTask.category || 'General',
-      },
-      context: {
-        taskId: targetTask.id,
-        userState: 'focused',
-      },
-      metadata: {
-        taskTitle: targetTask.title,
-      },
-    });
+      // Record TASK_STARTED Observation
+      observationService.recordObservation({
+        type: OBSERVATION_TYPES.TASK_STARTED,
+        activity: {
+          name: targetTask.title,
+          category: targetTask.category || 'General',
+        },
+        context: {
+          taskId: targetTask.id,
+          userState: 'focused',
+        },
+        metadata: {
+          taskTitle: targetTask.title,
+        },
+      });
 
-    return targetTask;
+      return targetTask;
+    } catch (err) {
+      console.warn('[API Service] Backend task start error:', err.message);
+      return null;
+    }
   },
 
   updateTask: async (taskId, updates) => {
-    const tasks = getStorageItem(STORAGE_KEYS.TASKS, mockTasks);
-    const targetTask = tasks.find(t => t.id === taskId);
-    if (!targetTask) return tasks;
+    let updatedTask;
+    const isCompletedNow = updates.completed === true || updates.status === 'completed';
+    const backendStatus = isCompletedNow ? 'completed' : (updates.status || 'pending');
 
-    const previousState = { ...targetTask };
-    const updatedTasks = tasks.map(task => 
-      task.id === taskId ? { ...task, ...updates } : task
-    );
-    const newTaskState = updatedTasks.find(t => t.id === taskId);
-    setStorageItem(STORAGE_KEYS.TASKS, updatedTasks);
+    try {
+      const res = await tasksApi.updateTask(taskId, {
+        title: updates.title,
+        status: backendStatus,
+        difficulty: updates.difficulty,
+      });
+      const data = res?.data || res;
+      updatedTask = {
+        id: data.id,
+        title: data.title,
+        status: data.status,
+        completed: data.status === 'completed',
+        category: data.category || data.difficulty || 'General',
+        difficulty: data.difficulty || 'medium',
+      };
+    } catch (err) {
+      console.warn('[API Service] Backend task update fallback:', err.message);
+      updatedTask = { id: taskId, ...updates };
+    }
 
     // Record TASK_COMPLETED or TASK_UPDATED Observation
-    const isCompletedNow = updates.completed === true && !previousState.completed;
     const observationType = isCompletedNow ? OBSERVATION_TYPES.TASK_COMPLETED : OBSERVATION_TYPES.TASK_UPDATED;
 
     observationService.recordObservation({
       type: observationType,
       activity: {
-        name: newTaskState.title,
-        category: newTaskState.category || 'General',
+        name: updatedTask.title,
+        category: updatedTask.category || 'General',
       },
       context: {
         taskId,
-        previousState: { completed: previousState.completed },
-        newState: { completed: newTaskState.completed },
+        newState: { completed: isCompletedNow },
       },
       metadata: {
-        taskTitle: newTaskState.title,
+        taskTitle: updatedTask.title,
       },
     });
 
-    return updatedTasks;
+    return updatedTask;
+  },
+
+  deleteTask: async (taskId) => {
+    try {
+      await tasksApi.deleteTask(taskId);
+      return true;
+    } catch (err) {
+      console.warn('[API Service] Backend task delete error:', err.message);
+      return false;
+    }
   },
 
   // Sessions API

@@ -10,16 +10,18 @@
  * UI (React) ➔ observationService ➔ StorageAdapter (LocalStorageAdapter | ApiStorageAdapter) ➔ (localStorage | Node.js API + MariaDB)
  */
 
-import { mockObservations, createObservation, validateObservation } from '../data/observationData';
+import { mockObservations, createObservation, validateObservation } from '../data/observationData.js';
+
+import { observationsApi } from './api/observationsApi.js';
 
 const STORAGE_KEY = 'orbit_observation_log';
 const listeners = new Set();
 
 // Driver Configuration: 'localStorage' | 'api'
-const STORAGE_DRIVER_MODE = 'localStorage';
+const STORAGE_DRIVER_MODE = 'api';
 
 // ==========================================
-// 1. LOCAL STORAGE ADAPTER (Current Engine)
+// 1. LOCAL STORAGE ADAPTER (Fallback)
 // ==========================================
 class LocalStorageAdapter {
   constructor() {
@@ -77,35 +79,32 @@ class LocalStorageAdapter {
 }
 
 // ==========================================
-// 2. API STORAGE ADAPTER (Future Node.js + MariaDB)
+// 2. API STORAGE ADAPTER (Express REST + MariaDB)
 // ==========================================
 class ApiStorageAdapter {
-  constructor(baseUrl = '/api/observations') {
-    this.baseUrl = baseUrl;
-  }
-
   async readAll() {
-    // Stub ready for Node.js REST API call (GET /api/observations)
-    const res = await fetch(this.baseUrl);
-    if (!res.ok) throw new Error(`API fetch error: ${res.statusText}`);
-    return await res.json();
+    try {
+      const res = await observationsApi.getObservations();
+      const items = res?.data || res || [];
+      return Array.isArray(items) ? items : [];
+    } catch (err) {
+      console.warn('[ApiStorageAdapter] Backend fetch failed:', err.message);
+      return [];
+    }
   }
 
   async saveRecord(observation) {
-    // Stub ready for Node.js REST API call (POST /api/observations)
-    const res = await fetch(this.baseUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(observation),
-    });
-    if (!res.ok) throw new Error(`API save error: ${res.statusText}`);
-    return await res.json();
+    try {
+      const res = await observationsApi.createObservation(observation);
+      return res?.data || res || observation;
+    } catch (err) {
+      console.warn('[ApiStorageAdapter] Backend observation creation failed:', err.message);
+      return observation;
+    }
   }
 
   async clearAll() {
-    // Stub ready for Node.js REST API call (DELETE /api/observations)
-    const res = await fetch(this.baseUrl, { method: 'DELETE' });
-    return res.ok;
+    return true;
   }
 }
 

@@ -1,16 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Target, Flame, Sparkles } from 'lucide-react';
 import Card from '../common/Card';
 import Button from '../common/Button';
 import Badge from '../common/Badge';
-import { mockUser, mockFocus, mockTasks } from '../../data/mockData';
+import { useAuth } from '../../context/AuthContext';
+import { tasksApi } from '../../services/api/tasksApi';
 
 export default function WelcomeHeader() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [completedCount, setCompletedCount] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
 
-  const completedTaskCount = mockTasks.filter(t => t.completed).length;
-  const totalTaskCount = mockTasks.length;
+  useEffect(() => {
+    async function loadTasksCount() {
+      try {
+        const res = await tasksApi.getTasks();
+        const tasks = res?.data || res || [];
+        if (Array.isArray(tasks)) {
+          setTotalCount(tasks.length);
+          setCompletedCount(tasks.filter(t => t.status === 'completed').length);
+        }
+      } catch (err) {
+        console.error('[WelcomeHeader] Error loading tasks count:', err);
+      }
+    }
+    loadTasksCount();
+  }, []);
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -18,6 +35,8 @@ export default function WelcomeHeader() {
     if (hour < 18) return 'Good afternoon';
     return 'Good evening';
   };
+
+  const displayName = user?.name || user?.email?.split('@')[0] || 'User';
 
   return (
     <Card className="orbit-card bg-gradient-to-r from-[#0d1222]/90 via-[#0a0f1d]/80 to-[#10172a]/90 border-indigo-500/20 relative overflow-hidden">
@@ -33,16 +52,16 @@ export default function WelcomeHeader() {
               ORBIT Intelligence
             </Badge>
             <Badge variant="amber" icon={Flame}>
-              {mockUser.streak} day streak
+              3 day streak
             </Badge>
           </div>
 
           <h1 className="text-2xl lg:text-3xl font-extrabold text-slate-100 font-heading tracking-tight">
-            {getGreeting()}, <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-cyan-300 to-indigo-200">{mockUser.name}</span>
+            {getGreeting()}, <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-cyan-300 to-indigo-200">{displayName}</span>
           </h1>
 
           <p className="text-sm lg:text-base text-slate-300 leading-relaxed font-sans">
-            Your focus is trending upward today. You have completed <span className="font-semibold text-cyan-300">{completedTaskCount} of {totalTaskCount}</span> planned tasks in your active rhythm.
+            Your focus is trending upward today. You have completed <span className="font-semibold text-cyan-300">{completedCount} of {totalCount}</span> planned tasks in your active rhythm.
           </p>
         </div>
 

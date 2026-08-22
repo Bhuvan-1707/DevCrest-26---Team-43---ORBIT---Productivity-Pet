@@ -1,13 +1,51 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Target, TrendingUp } from 'lucide-react';
 import Card from '../common/Card';
 import Badge from '../common/Badge';
-import { useSession } from '../../hooks/useSession';
+import { sessionsApi } from '../../services/api/sessionsApi';
 
 export default function FocusScore() {
-  const { focusState } = useSession();
-  const score = focusState?.current || 82;
+  const [score, setScore] = useState(82);
+  const [sessionCount, setSessionCount] = useState(0);
+  const [totalMinutes, setTotalMinutes] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadFocusMetrics() {
+      setLoading(true);
+      try {
+        const res = await sessionsApi.getSessions();
+        const sessions = res?.data || res || [];
+        setSessionCount(sessions.length);
+
+        if (sessions.length > 0) {
+          const totalMins = sessions.reduce((acc, s) => acc + (s.actualDurationMinutes || s.actual_duration_minutes || s.duration || 0), 0);
+          setTotalMinutes(totalMins);
+
+          const scores = sessions.map(s => s.focusScore || s.focus_score || 80).filter(Boolean);
+          if (scores.length > 0) {
+            const avgScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+            setScore(avgScore);
+          }
+        }
+      } catch (err) {
+        console.error('[FocusScore] Error loading focus sessions:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadFocusMetrics();
+  }, []);
+
   const strokeDashoffset = 283 - (283 * score) / 100; // Circumference = 2 * π * 45 ≈ 283
+
+  if (loading) {
+    return (
+      <Card className="orbit-card flex items-center justify-center h-full min-h-[220px]">
+        <div className="w-6 h-6 border-2 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin"></div>
+      </Card>
+    );
+  }
 
   return (
     <Card className="orbit-card flex flex-col justify-between h-full relative overflow-hidden">
@@ -71,10 +109,10 @@ export default function FocusScore() {
 
       {/* Trend Meta Footer */}
       <div className="pt-3 border-t border-slate-800/60 flex items-center justify-between text-xs">
-        <span className="text-slate-400">Trend Status</span>
+        <span className="text-slate-400">{sessionCount} Sessions Recorded</span>
         <span className="flex items-center gap-1 font-bold text-emerald-400">
           <TrendingUp size={13} />
-          ↑ {focusState?.change || 8}% from avg
+          {totalMinutes > 0 ? `${totalMinutes} focus min` : 'Optimal index'}
         </span>
       </div>
     </Card>
