@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Pause, Square, ArrowLeft, CheckCircle2, Target, Sparkles } from 'lucide-react';
+import { Play, Pause, Square, ArrowLeft, CheckCircle2, Sparkles } from 'lucide-react';
 import Card from '../components/common/Card';
 import Button from '../components/common/Button';
 import Badge from '../components/common/Badge';
 import ProgressBar from '../components/common/ProgressBar';
 import OrbitPet from '../components/pet/OrbitPet';
 import { mockFocus } from '../data/mockData';
+import { OBSERVATION_TYPES } from '../data/observationData';
+import { observationService } from '../services/observationService';
 import { useSession } from '../hooks/useSession';
 
 export default function Session() {
@@ -18,6 +20,9 @@ export default function Session() {
   const [timeLeft, setTimeLeft] = useState(INITIAL_SECONDS);
   const [status, setStatus] = useState('idle'); // 'idle' | 'running' | 'paused' | 'completed'
   const [completedDuration, setCompletedDuration] = useState(0);
+
+  // Persistent Session ID for telemetry tracking across lifecycle
+  const sessionIdRef = useRef(`sess_${Date.now()}`);
 
   // Timer interval effect
   useEffect(() => {
@@ -49,16 +54,105 @@ export default function Session() {
   const elapsedSeconds = INITIAL_SECONDS - timeLeft;
   const progressPercent = Math.min(Math.round((elapsedSeconds / INITIAL_SECONDS) * 100), 100);
 
-  const handleStart = () => setStatus('running');
-  const handlePause = () => setStatus('paused');
-  const handleResume = () => setStatus('running');
+  const handleStart = () => {
+    setStatus('running');
+    
+    // Record SESSION_STARTED Observation Telemetry
+    observationService.recordObservation({
+      type: OBSERVATION_TYPES.SESSION_STARTED,
+      activity: {
+        name: mockFocus.activeFocusItem.title,
+        category: 'Practice',
+        duration: 0,
+      },
+      context: {
+        page: '/session',
+        taskId: 2,
+        sessionId: sessionIdRef.current,
+        sessionStatus: 'running',
+      },
+      metadata: {
+        plannedDurationMinutes: 45,
+        targetDifficulty: mockFocus.activeFocusItem.difficulty,
+      },
+    });
+  };
+
+  const handlePause = () => {
+    setStatus('paused');
+
+    // Record SESSION_PAUSED Observation Telemetry
+    observationService.recordObservation({
+      type: OBSERVATION_TYPES.SESSION_PAUSED,
+      activity: {
+        name: mockFocus.activeFocusItem.title,
+        category: 'Practice',
+        duration: Math.max(1, Math.round(elapsedSeconds / 60)),
+      },
+      context: {
+        page: '/session',
+        taskId: 2,
+        sessionId: sessionIdRef.current,
+        sessionStatus: 'paused',
+      },
+      metadata: {
+        elapsedDurationSeconds: elapsedSeconds,
+        remainingSeconds: timeLeft,
+      },
+    });
+  };
+
+  const handleResume = () => {
+    setStatus('running');
+
+    // Record SESSION_RESUMED Observation Telemetry
+    observationService.recordObservation({
+      type: OBSERVATION_TYPES.SESSION_RESUMED,
+      activity: {
+        name: mockFocus.activeFocusItem.title,
+        category: 'Practice',
+        duration: Math.max(1, Math.round(elapsedSeconds / 60)),
+      },
+      context: {
+        page: '/session',
+        taskId: 2,
+        sessionId: sessionIdRef.current,
+        sessionStatus: 'running',
+      },
+      metadata: {
+        elapsedDurationSeconds: elapsedSeconds,
+        remainingSeconds: timeLeft,
+      },
+    });
+  };
 
   const handleComplete = (mins) => {
     const minutesSpent = mins || Math.max(1, Math.round(elapsedSeconds / 60));
     setCompletedDuration(minutesSpent);
     setStatus('completed');
     
-    // Save session to localStorage & update state via API/hook
+    // 1. Record SESSION_COMPLETED Observation Telemetry
+    observationService.recordObservation({
+      type: OBSERVATION_TYPES.SESSION_COMPLETED,
+      activity: {
+        name: mockFocus.activeFocusItem.title,
+        category: 'Practice',
+        duration: minutesSpent,
+      },
+      context: {
+        page: '/session',
+        taskId: 2,
+        sessionId: sessionIdRef.current,
+        sessionStatus: 'completed',
+      },
+      metadata: {
+        actualDurationMinutes: minutesSpent,
+        focusScoreRating: 85,
+        completionStatus: 'successful',
+      },
+    });
+
+    // 2. Save session to localStorage & update state via API/hook
     finishSession({
       duration: minutesSpent,
       focusScore: 85,

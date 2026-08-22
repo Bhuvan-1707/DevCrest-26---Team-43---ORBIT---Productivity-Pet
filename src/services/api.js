@@ -10,6 +10,8 @@ import {
   mockProtocol,
   mockPetState 
 } from '../data/mockData';
+import { OBSERVATION_TYPES } from '../data/observationData';
+import { observationService } from './observationService';
 
 const STORAGE_KEYS = {
   SESSIONS: 'orbit_completed_sessions',
@@ -70,12 +72,95 @@ export const api = {
     return getStorageItem(STORAGE_KEYS.TASKS, mockTasks);
   },
 
+  createTask: async (taskData) => {
+    const tasks = getStorageItem(STORAGE_KEYS.TASKS, mockTasks);
+    const newTask = {
+      id: Date.now(),
+      title: taskData.title || 'Untitled Task',
+      completed: false,
+      category: taskData.category || 'General',
+      difficulty: taskData.difficulty || 'medium',
+      ...taskData,
+    };
+
+    const updatedTasks = [newTask, ...tasks];
+    setStorageItem(STORAGE_KEYS.TASKS, updatedTasks);
+
+    // Record TASK_CREATED Observation
+    observationService.recordObservation({
+      type: OBSERVATION_TYPES.TASK_CREATED,
+      activity: {
+        name: newTask.title,
+        category: newTask.category,
+      },
+      context: {
+        taskId: newTask.id,
+        newState: { completed: false },
+      },
+      metadata: {
+        taskTitle: newTask.title,
+      },
+    });
+
+    return newTask;
+  },
+
+  startTask: async (taskId) => {
+    const tasks = getStorageItem(STORAGE_KEYS.TASKS, mockTasks);
+    const targetTask = tasks.find(t => t.id === taskId);
+    if (!targetTask) return null;
+
+    // Record TASK_STARTED Observation
+    observationService.recordObservation({
+      type: OBSERVATION_TYPES.TASK_STARTED,
+      activity: {
+        name: targetTask.title,
+        category: targetTask.category || 'General',
+      },
+      context: {
+        taskId: targetTask.id,
+        userState: 'focused',
+      },
+      metadata: {
+        taskTitle: targetTask.title,
+      },
+    });
+
+    return targetTask;
+  },
+
   updateTask: async (taskId, updates) => {
     const tasks = getStorageItem(STORAGE_KEYS.TASKS, mockTasks);
+    const targetTask = tasks.find(t => t.id === taskId);
+    if (!targetTask) return tasks;
+
+    const previousState = { ...targetTask };
     const updatedTasks = tasks.map(task => 
       task.id === taskId ? { ...task, ...updates } : task
     );
+    const newTaskState = updatedTasks.find(t => t.id === taskId);
     setStorageItem(STORAGE_KEYS.TASKS, updatedTasks);
+
+    // Record TASK_COMPLETED or TASK_UPDATED Observation
+    const isCompletedNow = updates.completed === true && !previousState.completed;
+    const observationType = isCompletedNow ? OBSERVATION_TYPES.TASK_COMPLETED : OBSERVATION_TYPES.TASK_UPDATED;
+
+    observationService.recordObservation({
+      type: observationType,
+      activity: {
+        name: newTaskState.title,
+        category: newTaskState.category || 'General',
+      },
+      context: {
+        taskId,
+        previousState: { completed: previousState.completed },
+        newState: { completed: newTaskState.completed },
+      },
+      metadata: {
+        taskTitle: newTaskState.title,
+      },
+    });
+
     return updatedTasks;
   },
 

@@ -9,6 +9,7 @@ import {
   Sparkles, 
   Zap, 
   Activity,
+  Radio,
   Menu,
   X
 } from 'lucide-react';
@@ -16,10 +17,11 @@ import {
 const navigationItems = [
   { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
   { name: 'Focus', path: '/session', icon: Target },
-  { name: 'Tasks', path: '/tasks', icon: CheckSquare, badge: 'Soon' },
-  { name: 'Goals', path: '/goals', icon: Compass, badge: 'Soon' },
+  { name: 'Observations', path: '/observations', icon: Radio },
   { name: 'Memory', path: '/memory', icon: Brain },
   { name: 'Insights', path: '/insights', icon: Sparkles },
+  { name: 'Tasks', path: '/tasks', icon: CheckSquare, badge: 'Soon' },
+  { name: 'Goals', path: '/goals', icon: Compass, badge: 'Soon' },
   { name: 'Experiments', path: '/experiments', icon: Zap, badge: 'Soon' },
   { name: 'Recovery', path: '/recovery', icon: Activity, badge: 'Soon' },
 ];

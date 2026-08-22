@@ -8,6 +8,7 @@ import ProductivityOverview from '../components/dashboard/ProductivityOverview';
 import GoalProgress from '../components/dashboard/GoalProgress';
 import RecoveryCard from '../components/dashboard/RecoveryCard';
 import InsightCard from '../components/dashboard/InsightCard';
+import RecentActivityCard from '../components/dashboard/RecentActivityCard';
 
 export default function Dashboard() {
   return (
@@ -38,7 +39,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* 4. Bottom Intelligence Row (Goal Progress, Recovery State, ORBIT Discovered) */}
+      {/* 4. Bottom Row 1 (Goal Progress, Recovery State, ORBIT Discovered) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="sm:col-span-1">
           <GoalProgress />
@@ -49,6 +50,11 @@ export default function Dashboard() {
         <div className="sm:col-span-2 lg:col-span-1">
           <InsightCard />
         </div>
+      </div>
+
+      {/* 5. Telemetry Activity Stream Row (Recent Activity Widget) */}
+      <div className="grid grid-cols-1 gap-6">
+        <RecentActivityCard />
       </div>
     </div>
   );

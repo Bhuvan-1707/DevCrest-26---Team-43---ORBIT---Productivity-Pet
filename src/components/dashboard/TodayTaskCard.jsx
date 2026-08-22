@@ -1,20 +1,69 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, CheckSquare, ListTodo, Plus } from 'lucide-react';
+import { Check, ListTodo } from 'lucide-react';
 import Card from '../common/Card';
 import Badge from '../common/Badge';
 import ProgressBar from '../common/ProgressBar';
 import { mockTasks } from '../../data/mockData';
+import { OBSERVATION_TYPES } from '../../data/observationData';
+import { observationService } from '../../services/observationService';
 
 export default function TodayTaskCard() {
   const [tasks, setTasks] = useState(mockTasks);
 
   const toggleTask = (id) => {
+    const targetTask = tasks.find(t => t.id === id);
+    if (!targetTask) return;
+
+    const previousState = { completed: targetTask.completed };
+    const nextCompleted = !targetTask.completed;
+    const newState = { completed: nextCompleted };
+
     setTasks(prevTasks =>
       prevTasks.map(task =>
-        task.id === id ? { ...task, completed: !task.completed } : task
+        task.id === id ? { ...task, completed: nextCompleted } : task
       )
     );
+
+    // Record Telemetry Observation via observationService
+    if (nextCompleted) {
+      observationService.recordObservation({
+        type: OBSERVATION_TYPES.TASK_COMPLETED,
+        activity: {
+          name: targetTask.title,
+          category: targetTask.category || targetTask.difficulty || 'General',
+          duration: targetTask.estimatedMinutes || 25,
+        },
+        context: {
+          page: '/dashboard',
+          taskId: targetTask.id,
+          previousState,
+          newState,
+        },
+        metadata: {
+          taskTitle: targetTask.title,
+        },
+      });
+    } else {
+      observationService.recordObservation({
+        type: OBSERVATION_TYPES.TASK_UPDATED,
+        activity: {
+          name: targetTask.title,
+          category: targetTask.category || targetTask.difficulty || 'General',
+          duration: 0,
+        },
+        context: {
+          page: '/dashboard',
+          taskId: targetTask.id,
+          previousState,
+          newState,
+        },
+        metadata: {
+          taskTitle: targetTask.title,
+          updateType: 'REOPENED',
+        },
+      });
+    }
   };
 
   const completedCount = tasks.filter(t => t.completed).length;

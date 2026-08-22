@@ -1,15 +1,18 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import PageContainer from './components/layout/PageContainer';
+import NavigationObserver from './components/layout/NavigationObserver';
 import Dashboard from './pages/Dashboard';
 import Session from './pages/Session';
 import Memory from './pages/Memory';
 import Insights from './pages/Insights';
+import Observations from './pages/Observations';
 import PlaceholderPage from './pages/PlaceholderPage';
 
 export default function App() {
   return (
     <BrowserRouter>
+      <NavigationObserver />
       <PageContainer>
         <Routes>
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
@@ -17,6 +20,7 @@ export default function App() {
           <Route path="/session" element={<Session />} />
           <Route path="/memory" element={<Memory />} />
           <Route path="/insights" element={<Insights />} />
+          <Route path="/observations" element={<Observations />} />
           
           {/* Upcoming Module Placeholders */}
           <Route 

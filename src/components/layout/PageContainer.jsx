@@ -1,6 +1,7 @@
 import React from 'react';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
+import ObservationToast from '../common/ObservationToast';
 
 export default function PageContainer({ children }) {
   return (
@@ -18,6 +19,9 @@ export default function PageContainer({ children }) {
           </div>
         </main>
       </div>
+
+      {/* Global Real-time Observation Toast Notification */}
+      <ObservationToast />
     </div>
   );
 }
