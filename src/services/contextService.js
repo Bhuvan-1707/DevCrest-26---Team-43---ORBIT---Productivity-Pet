@@ -5,8 +5,7 @@
  * Pure context telemetry — contains zero predictions, conclusions, or AI logic.
  */
 
-import { api } from './api';
-import { mockFocus } from '../data/mockData';
+import { tasksApi, goalsApi, sessionsApi } from './api';
 
 export const contextService = {
   /**
@@ -16,9 +15,17 @@ export const contextService = {
    */
   getCurrentContext: async (overrides = {}) => {
     try {
-      const dashboardData = await api.getDashboard();
-      const tasks = dashboardData.tasks || [];
-      const completedTaskCount = tasks.filter(t => t.completed).length;
+      const [tasksRes, goalsRes] = await Promise.allSettled([
+        tasksApi.getTasks(),
+        goalsApi.getGoals(),
+      ]);
+
+      const tasks = tasksRes.status === 'fulfilled' ? (tasksRes.value?.data || tasksRes.value || []) : [];
+      const goals = goalsRes.status === 'fulfilled' ? (goalsRes.value?.data || goalsRes.value || []) : [];
+
+      const completedTaskCount = Array.isArray(tasks) ? tasks.filter(t => t.completed).length : 0;
+      const activeTaskItem = Array.isArray(tasks) ? tasks.find(t => !t.completed) : null;
+      const primaryGoal = Array.isArray(goals) && goals.length > 0 ? goals[0] : null;
 
       const currentRoute = typeof window !== 'undefined' ? window.location.pathname : '/dashboard';
 
@@ -26,10 +33,10 @@ export const contextService = {
         timestamp: new Date().toISOString(),
         route: overrides.route || currentRoute,
         activeTask: overrides.activeTask || {
-          id: mockFocus.activeFocusItem.id || 2,
-          title: mockFocus.activeFocusItem.title,
-          difficulty: mockFocus.activeFocusItem.difficulty,
-          estimatedMinutes: mockFocus.activeFocusItem.estimatedMinutes || 45,
+          id: activeTaskItem?.id || 1,
+          title: activeTaskItem?.title || 'Deep Work Focus Block',
+          difficulty: activeTaskItem?.difficulty || 'high',
+          estimatedMinutes: activeTaskItem?.estimatedMinutes || 45,
         },
         activeSession: overrides.activeSession || {
           id: overrides.sessionId || `sess_active`,
@@ -37,15 +44,15 @@ export const contextService = {
           status: overrides.sessionStatus || 'idle',
         },
         sessionStatus: overrides.sessionStatus || 'idle',
-        focusScore: dashboardData.focus?.current || 82,
+        focusScore: 88,
         completedTasks: completedTaskCount,
-        totalTasks: tasks.length,
+        totalTasks: Array.isArray(tasks) ? tasks.length : 0,
         currentGoal: {
-          title: dashboardData.goal?.title || 'Become proficient in DAA',
-          progress: dashboardData.goal?.progress || 78,
+          title: primaryGoal?.title || 'Master Full-Stack Productivity System',
+          progress: primaryGoal?.totalMilestones ? Math.round((primaryGoal.completedMilestones / primaryGoal.totalMilestones) * 100) : 60,
         },
-        recoveryState: dashboardData.recovery?.state || 'good',
-        petState: dashboardData.petState || 'idle',
+        recoveryState: 'good',
+        petState: overrides.petState || 'idle',
         ...overrides,
       };
     } catch (err) {
@@ -53,13 +60,13 @@ export const contextService = {
       return {
         timestamp: new Date().toISOString(),
         route: typeof window !== 'undefined' ? window.location.pathname : '/dashboard',
-        activeTask: { title: 'DAA — Graph Algorithms' },
+        activeTask: { title: 'Deep Work Focus Block' },
         activeSession: { status: 'idle' },
         sessionStatus: 'idle',
-        focusScore: 82,
-        completedTasks: 2,
-        totalTasks: 5,
-        currentGoal: { title: 'Become proficient in DAA', progress: 78 },
+        focusScore: 85,
+        completedTasks: 0,
+        totalTasks: 0,
+        currentGoal: { title: 'Master Full-Stack Productivity System', progress: 50 },
         recoveryState: 'good',
         petState: 'idle',
         ...overrides,

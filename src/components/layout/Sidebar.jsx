@@ -20,10 +20,10 @@ const navigationItems = [
   { name: 'Observations', path: '/observations', icon: Radio },
   { name: 'Memory', path: '/memory', icon: Brain },
   { name: 'Insights', path: '/insights', icon: Sparkles },
-  { name: 'Tasks', path: '/tasks', icon: CheckSquare, badge: 'Soon' },
-  { name: 'Goals', path: '/goals', icon: Compass, badge: 'Soon' },
-  { name: 'Experiments', path: '/experiments', icon: Zap, badge: 'Soon' },
-  { name: 'Recovery', path: '/recovery', icon: Activity, badge: 'Soon' },
+  { name: 'Tasks', path: '/tasks', icon: CheckSquare },
+  { name: 'Goals', path: '/goals', icon: Compass },
+  { name: 'Experiments', path: '/experiments', icon: Zap },
+  { name: 'Recovery', path: '/recovery', icon: Activity },
 ];
 
 export default function Sidebar() {

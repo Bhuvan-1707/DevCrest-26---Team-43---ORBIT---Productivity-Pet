@@ -12,21 +12,41 @@ export default function WelcomeHeader() {
   const { user } = useAuth();
   const [completedCount, setCompletedCount] = useState(0);
   const [totalCount, setTotalCount] = useState(0);
+  const [streakDays, setStreakDays] = useState(0);
 
   useEffect(() => {
-    async function loadTasksCount() {
+    async function loadMetrics() {
       try {
-        const res = await tasksApi.getTasks();
-        const tasks = res?.data || res || [];
+        const [taskRes, sessRes] = await Promise.allSettled([
+          tasksApi.getTasks(),
+          sessionsApi.getSessions(),
+        ]);
+
+        const tasks = taskRes.status === 'fulfilled' ? (taskRes.value?.data || taskRes.value || []) : [];
+        const sessions = sessRes.status === 'fulfilled' ? (sessRes.value?.data || sessRes.value || []) : [];
+
         if (Array.isArray(tasks)) {
           setTotalCount(tasks.length);
-          setCompletedCount(tasks.filter(t => t.status === 'completed').length);
+          setCompletedCount(tasks.filter(t => t.status === 'completed' || t.completed).length);
         }
+
+        const activeDates = new Set();
+        sessions.forEach(s => {
+          if (s.created_at || s.createdAt) {
+            activeDates.add(new Date(s.created_at || s.createdAt).toDateString());
+          }
+        });
+        tasks.forEach(t => {
+          if ((t.completed || t.status === 'completed') && (t.updated_at || t.updatedAt)) {
+            activeDates.add(new Date(t.updated_at || t.updatedAt).toDateString());
+          }
+        });
+        setStreakDays(activeDates.size);
       } catch (err) {
-        console.error('[WelcomeHeader] Error loading tasks count:', err);
+        console.error('[WelcomeHeader] Error loading metrics:', err);
       }
     }
-    loadTasksCount();
+    loadMetrics();
   }, []);
 
   const getGreeting = () => {
@@ -52,7 +72,7 @@ export default function WelcomeHeader() {
               ORBIT Intelligence
             </Badge>
             <Badge variant="amber" icon={Flame}>
-              3 day streak
+              {streakDays} day streak
             </Badge>
           </div>
 

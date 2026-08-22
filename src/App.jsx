@@ -15,6 +15,7 @@ import PlaceholderPage from './pages/PlaceholderPage';
 import Goals from './pages/Goals';
 import Recovery from './pages/Recovery';
 import Experiments from './pages/Experiments';
+import Tasks from './pages/Tasks';
 
 export default function App() {
   return (
@@ -41,18 +42,7 @@ export default function App() {
                     <Route path="/goals" element={<Goals />} />
                     <Route path="/recovery" element={<Recovery />} />
                     <Route path="/experiments" element={<Experiments />} />
-                    
-                    {/* Upcoming Module Placeholders */}
-                    <Route 
-                      path="/tasks" 
-                      element={
-                        <PlaceholderPage 
-                          title="Tasks Overview" 
-                          description="Manage daily tasks and focus targets" 
-                          icon="✓" 
-                        />
-                      } 
-                    />
+                    <Route path="/tasks" element={<Tasks />} />
 
                     {/* Catch-all redirect */}
                     <Route path="*" element={<Navigate to="/dashboard" replace />} />

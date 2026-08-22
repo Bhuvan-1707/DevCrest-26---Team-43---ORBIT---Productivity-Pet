@@ -1,10 +1,45 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Bell, Settings, Flame, User, LogOut } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { sessionsApi } from '../../services/api/sessionsApi';
+import { tasksApi } from '../../services/api/tasksApi';
 
-export default function Topbar({ userName, streakDays = 7 }) {
+export default function Topbar({ userName, streakDays }) {
   const { user, logout } = useAuth();
-  const activeName = user?.name || userName || 'Bhuvan';
+  const activeName = user?.name || userName || 'User';
+  const [dynamicStreak, setDynamicStreak] = useState(streakDays !== undefined ? streakDays : 0);
+
+  useEffect(() => {
+    async function calculateStreak() {
+      try {
+        const [sessRes, taskRes] = await Promise.allSettled([
+          sessionsApi.getSessions(),
+          tasksApi.getTasks(),
+        ]);
+        const sessions = sessRes.status === 'fulfilled' ? (sessRes.value?.data || sessRes.value || []) : [];
+        const tasks = taskRes.status === 'fulfilled' ? (taskRes.value?.data || taskRes.value || []) : [];
+
+        const activeDates = new Set();
+        sessions.forEach(s => {
+          if (s.created_at || s.createdAt) {
+            activeDates.add(new Date(s.created_at || s.createdAt).toDateString());
+          }
+        });
+        tasks.forEach(t => {
+          if (t.completed && (t.updated_at || t.updatedAt)) {
+            activeDates.add(new Date(t.updated_at || t.updatedAt).toDateString());
+          }
+        });
+
+        setDynamicStreak(activeDates.size);
+      } catch (err) {
+        console.warn('[Topbar] Error calculating streak:', err);
+      }
+    }
+    if (streakDays === undefined) {
+      calculateStreak();
+    }
+  }, [streakDays]);
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -27,7 +62,7 @@ export default function Topbar({ userName, streakDays = 7 }) {
         {/* Streak Pill */}
         <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold shadow-xs">
           <Flame size={14} className="text-amber-500 fill-amber-500 animate-pulse" />
-          <span className="tracking-wide">{streakDays} day streak</span>
+          <span className="tracking-wide">{dynamicStreak} day streak</span>
         </div>
 
         {/* Notifications Icon Button */}

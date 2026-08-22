@@ -6,7 +6,7 @@ import UserModel from '../models/userModel.js';
 // Helper to generate JWT token
 const generateToken = (user) => {
   return jwt.sign(
-    { id: user.id, email: user.email },
+    { id: Number(user.id), email: user.email },
     config.jwtSecret,
     { expiresIn: config.jwtExpiresIn }
   );
@@ -15,7 +15,10 @@ const generateToken = (user) => {
 // Helper to format user payload without sensitive fields
 const sanitizeUser = (user) => {
   const { password_hash, ...safeUser } = user;
-  return safeUser;
+  return {
+    ...safeUser,
+    id: Number(safeUser.id),
+  };
 };
 
 /**

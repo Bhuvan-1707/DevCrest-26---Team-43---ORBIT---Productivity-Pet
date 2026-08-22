@@ -43,7 +43,7 @@ const DEFAULT_DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 export default function ProductivityOverview() {
   const [chartData, setChartData] = useState([]);
-  const [avgScore, setAvgScore] = useState(78);
+  const [avgScore, setAvgScore] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -58,25 +58,57 @@ export default function ProductivityOverview() {
         const sessions = sessRes?.data || sessRes || [];
         const tasks = taskRes?.data || taskRes || [];
 
-        // Build 7-day trend map
-        const defaultChart = [
-          { day: 'Mon', focus: 68, tasksCompleted: 3, productiveMinutes: 120 },
-          { day: 'Tue', focus: 75, tasksCompleted: 4, productiveMinutes: 150 },
-          { day: 'Wed', focus: 82, tasksCompleted: 5, productiveMinutes: 180 },
-          { day: 'Thu', focus: 78, tasksCompleted: 4, productiveMinutes: 160 },
-          { day: 'Fri', focus: 85, tasksCompleted: 6, productiveMinutes: 200 },
-          { day: 'Sat', focus: 70, tasksCompleted: 2, productiveMinutes: 90 },
-          { day: 'Sun', focus: 80, tasksCompleted: 3, productiveMinutes: 135 },
-        ];
+        const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        const dayMap = {};
+        days.forEach(d => {
+          dayMap[d] = { focusSum: 0, count: 0, tasksCompleted: 0, productiveMinutes: 0 };
+        });
+
+        if (Array.isArray(sessions)) {
+          sessions.forEach(s => {
+            const date = new Date(s.created_at || s.createdAt || Date.now());
+            const dayName = days[(date.getDay() + 6) % 7]; // Map Sun(0)->6, Mon(1)->0
+            if (dayMap[dayName]) {
+              dayMap[dayName].focusSum += (s.focusScore || s.focus_score || 80);
+              dayMap[dayName].count += 1;
+              dayMap[dayName].productiveMinutes += (s.actualDurationMinutes || s.actual_duration_minutes || s.duration || 0);
+            }
+          });
+        }
+
+        if (Array.isArray(tasks)) {
+          tasks.forEach(t => {
+            if (t.completed || t.status === 'completed') {
+              const date = new Date(t.updated_at || t.updatedAt || Date.now());
+              const dayName = days[(date.getDay() + 6) % 7];
+              if (dayMap[dayName]) {
+                dayMap[dayName].tasksCompleted += 1;
+              }
+            }
+          });
+        }
+
+        const dynamicChart = days.map(day => {
+          const entry = dayMap[day];
+          const focusAvg = entry.count > 0 ? Math.round(entry.focusSum / entry.count) : 0;
+          return {
+            day,
+            focus: focusAvg,
+            tasksCompleted: entry.tasksCompleted,
+            productiveMinutes: entry.productiveMinutes,
+          };
+        });
 
         if (sessions.length > 0) {
           const calculatedAvg = Math.round(
             sessions.reduce((acc, s) => acc + (s.focusScore || s.focus_score || 80), 0) / sessions.length
           );
           setAvgScore(calculatedAvg);
+        } else {
+          setAvgScore(0);
         }
 
-        setChartData(defaultChart);
+        setChartData(dynamicChart);
       } catch (err) {
         console.error('[ProductivityOverview] Error loading trend:', err);
       } finally {

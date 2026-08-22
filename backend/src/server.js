@@ -3,7 +3,7 @@ import { testConnection } from './config/database.js';
 import { initDatabase } from './config/initDatabase.js';
 import app from './app.js';
 
-app.listen(config.port, async () => {
+const server = app.listen(config.port, async () => {
   console.log(`[ORBIT Backend API] Server running on http://localhost:${config.port} (${config.nodeEnv})`);
   
   // 1. Test MariaDB database connectivity at startup
@@ -12,5 +12,15 @@ app.listen(config.port, async () => {
   // 2. Safely initialize DB schema if database connection succeeded
   if (isConnected) {
     await initDatabase();
+  }
+});
+
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`[ORBIT Backend API] Port ${config.port} is already in use by another process.`);
+    console.error(`[ORBIT Backend API] Run "fuser -k ${config.port}/tcp" or stop the existing process to free the port.`);
+    process.exit(1);
+  } else {
+    console.error('[ORBIT Backend API] Server error:', err);
   }
 });

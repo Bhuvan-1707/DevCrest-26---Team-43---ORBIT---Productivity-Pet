@@ -1,6 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 
+// Global BigInt JSON serialization handler for MariaDB driver integration
+BigInt.prototype.toJSON = function() {
+  return Number(this);
+};
+
 // Import Route Modules
 import healthRoutes from './routes/health.js';
 import authRoutes from './routes/auth.js';

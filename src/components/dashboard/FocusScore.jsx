@@ -5,7 +5,7 @@ import Badge from '../common/Badge';
 import { sessionsApi } from '../../services/api/sessionsApi';
 
 export default function FocusScore() {
-  const [score, setScore] = useState(82);
+  const [score, setScore] = useState(0);
   const [sessionCount, setSessionCount] = useState(0);
   const [totalMinutes, setTotalMinutes] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -27,6 +27,8 @@ export default function FocusScore() {
             const avgScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
             setScore(avgScore);
           }
+        } else {
+          setScore(0);
         }
       } catch (err) {
         console.error('[FocusScore] Error loading focus sessions:', err);

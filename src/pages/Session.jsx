@@ -7,7 +7,7 @@ import Button from '../components/common/Button';
 import Badge from '../components/common/Badge';
 import ProgressBar from '../components/common/ProgressBar';
 import OrbitPet from '../components/pet/OrbitPet';
-import { mockFocus } from '../data/mockData';
+import { tasksApi } from '../services/api/tasksApi';
 import { OBSERVATION_TYPES } from '../data/observationData';
 import { observationService } from '../services/observationService';
 import { sessionsApi } from '../services/api/sessionsApi';
@@ -21,6 +21,26 @@ export default function Session() {
   const [timeLeft, setTimeLeft] = useState(INITIAL_SECONDS);
   const [status, setStatus] = useState('idle'); // 'idle' | 'running' | 'paused' | 'completed'
   const [completedDuration, setCompletedDuration] = useState(0);
+  const [activeTask, setActiveTask] = useState({ title: 'Deep Work Focus Block', difficulty: 'high' });
+
+  // Load first active task from tasksApi if available
+  useEffect(() => {
+    async function loadTask() {
+      try {
+        const res = await tasksApi.getTasks();
+        const pending = (res?.data || res || []).find(t => !t.completed);
+        if (pending) {
+          setActiveTask({
+            title: pending.title,
+            difficulty: pending.difficulty || 'medium',
+          });
+        }
+      } catch (err) {
+        console.warn('[Session] Failed to fetch active task from API:', err);
+      }
+    }
+    loadTask();
+  }, []);
 
   // Persistent Session ID for telemetry tracking across lifecycle
   const sessionIdRef = useRef(`sess_${Date.now()}`);
@@ -62,7 +82,7 @@ export default function Session() {
     // 1. Persist Focus Session via sessionsApi
     try {
       const res = await sessionsApi.createSession({
-        taskTitle: mockFocus.activeFocusItem.title,
+        taskTitle: activeTask.title,
         plannedDurationMinutes: 45,
         actualDurationMinutes: 0,
         status: 'running',
@@ -78,7 +98,7 @@ export default function Session() {
     observationService.recordObservation({
       type: OBSERVATION_TYPES.SESSION_STARTED,
       activity: {
-        name: mockFocus.activeFocusItem.title,
+        name: activeTask.title,
         category: 'Practice',
         duration: 0,
       },
@@ -90,7 +110,7 @@ export default function Session() {
       },
       metadata: {
         plannedDurationMinutes: 45,
-        targetDifficulty: mockFocus.activeFocusItem.difficulty,
+        targetDifficulty: activeTask.difficulty,
       },
     });
   };
@@ -116,7 +136,7 @@ export default function Session() {
     observationService.recordObservation({
       type: OBSERVATION_TYPES.SESSION_PAUSED,
       activity: {
-        name: mockFocus.activeFocusItem.title,
+        name: activeTask.title,
         category: 'Practice',
         duration: minutesSpent,
       },
@@ -153,7 +173,7 @@ export default function Session() {
     observationService.recordObservation({
       type: OBSERVATION_TYPES.SESSION_RESUMED,
       activity: {
-        name: mockFocus.activeFocusItem.title,
+        name: activeTask.title,
         category: 'Practice',
         duration: minutesSpent,
       },
@@ -192,7 +212,7 @@ export default function Session() {
     observationService.recordObservation({
       type: OBSERVATION_TYPES.SESSION_COMPLETED,
       activity: {
-        name: mockFocus.activeFocusItem.title,
+        name: activeTask.title,
         category: 'Practice',
         duration: minutesSpent,
       },
@@ -213,7 +233,7 @@ export default function Session() {
     finishSession({
       duration: minutesSpent,
       focusScore: 85,
-      taskTitle: mockFocus.activeFocusItem.title
+      taskTitle: activeTask.title
     });
   };
 
@@ -263,10 +283,10 @@ export default function Session() {
                   ACTIVE TASK TARGET
                 </span>
                 <h1 className="text-2xl lg:text-3xl font-extrabold text-slate-100 font-heading tracking-tight">
-                  {mockFocus.activeFocusItem.title}
+                  {activeTask.title}
                 </h1>
                 <div className="flex items-center gap-2 mt-1">
-                  <Badge variant="indigo" size="sm">Difficulty: {mockFocus.activeFocusItem.difficulty}</Badge>
+                  <Badge variant="indigo" size="sm">Difficulty: {activeTask.difficulty}</Badge>
                   <Badge variant="default" size="sm">Target: 45 min</Badge>
                 </div>
               </div>

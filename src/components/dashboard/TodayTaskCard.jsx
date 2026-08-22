@@ -20,24 +20,9 @@ export default function TodayTaskCard() {
     async function loadTasks() {
       setLoading(true);
       try {
-        let fetchedTasks = await api.getTasks();
-
-        // If newly registered user has no tasks yet, seed initial defaults
-        if (!fetchedTasks || fetchedTasks.length === 0) {
-          const defaultSeed = [
-            { title: 'Complete DAA — Graph Algorithms practice', category: 'Focus', difficulty: 'high' },
-            { title: 'Review Operating Systems process scheduling notes', category: 'Study', difficulty: 'medium' },
-            { title: 'Log 45-minute deep focus session in ORBIT', category: 'Rhythm', difficulty: 'low' },
-          ];
-          const createdList = [];
-          for (const seed of defaultSeed) {
-            const created = await api.createTask(seed);
-            createdList.push(created);
-          }
-          fetchedTasks = createdList;
-        }
-
-        setTasks(fetchedTasks);
+        const fetchedTasks = await tasksApi.getTasks();
+        const taskList = fetchedTasks?.data || fetchedTasks || [];
+        setTasks(Array.isArray(taskList) ? taskList : []);
       } catch (err) {
         console.error('[TodayTaskCard] Error loading tasks:', err);
       } finally {

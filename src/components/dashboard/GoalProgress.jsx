@@ -15,19 +15,10 @@ export default function GoalProgress() {
       try {
         const res = await goalsApi.getGoals();
         const goalsList = res?.data || res || [];
-        if (goalsList.length > 0) {
+        if (Array.isArray(goalsList) && goalsList.length > 0) {
           setGoal(goalsList[0]);
         } else {
-          // Seed default goal if none exists
-          const createdRes = await goalsApi.createGoal({
-            title: 'Master Advanced Algorithms & Systems',
-            description: 'Core computer science rhythm mastery',
-            target: 10,
-            current_progress: 7,
-            deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().substring(0, 10),
-            status: 'active',
-          });
-          setGoal(createdRes?.data || createdRes);
+          setGoal(null);
         }
       } catch (err) {
         console.error('[GoalProgress] Error loading goal:', err);
@@ -67,7 +58,7 @@ export default function GoalProgress() {
         </div>
 
         <h3 className="text-base font-bold text-slate-100 font-heading tracking-tight mt-1 truncate">
-          {goal?.title || 'Personal Productivity Target'}
+          {goal?.title || 'No active goal set'}
         </h3>
       </div>
 
