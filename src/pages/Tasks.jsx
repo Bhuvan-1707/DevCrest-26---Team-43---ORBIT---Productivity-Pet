@@ -174,12 +174,12 @@ export default function Tasks() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
-            <CheckSquare className="text-cyan-400" size={20} />
-            <h1 className="text-xl lg:text-2xl font-bold text-slate-100 font-heading">
+            <CheckSquare className="text-indigo-600 dark:text-cyan-400" size={20} />
+            <h1 className="text-xl lg:text-2xl font-bold text-slate-900 dark:text-slate-100 font-heading">
               Task Management Engine
             </h1>
           </div>
-          <p className="text-xs lg:text-sm text-slate-400">
+          <p className="text-xs lg:text-sm text-slate-600 dark:text-slate-400">
             Organize, track, and complete daily study and deep focus objectives.
           </p>
         </div>
@@ -199,7 +199,7 @@ export default function Tasks() {
 
       {/* Error Banner */}
       {error && (
-        <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs flex items-center gap-2">
+        <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-300 text-xs flex items-center gap-2">
           <AlertCircle size={15} />
           <span>{error}</span>
         </div>
@@ -209,41 +209,41 @@ export default function Tasks() {
       {showAddForm && (
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
           <Card className="orbit-card p-6 border-indigo-500/30">
-            <h3 className="text-sm font-bold text-slate-100 font-heading mb-4">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 font-heading mb-4">
               {editingTaskId ? 'Edit Task Specification' : 'Define New Target Task'}
             </h3>
             <form onSubmit={handleSaveTask} className="flex flex-col gap-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-semibold text-slate-300 mb-1 block">Task Title</label>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Task Title</label>
                   <input
                     type="text"
                     required
                     value={title}
                     onChange={e => setTitle(e.target.value)}
                     placeholder="e.g. Complete DAA Graph Algorithms practice"
-                    className="w-full bg-[#07090e] border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
+                    className="w-full bg-white dark:bg-[#07090e] border border-slate-300 dark:border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-semibold text-slate-300 mb-1 block">Category</label>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Category</label>
                   <input
                     type="text"
                     value={category}
                     onChange={e => setCategory(e.target.value)}
                     placeholder="e.g. Focus / Study / Rhythm"
-                    className="w-full bg-[#07090e] border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
+                    className="w-full bg-white dark:bg-[#07090e] border border-slate-300 dark:border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-semibold text-slate-300 mb-1 block">Difficulty Level</label>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Difficulty Level</label>
                   <select
                     value={difficulty}
                     onChange={e => setDifficulty(e.target.value)}
-                    className="w-full bg-[#07090e] border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
+                    className="w-full bg-white dark:bg-[#07090e] border border-slate-300 dark:border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:border-indigo-500"
                   >
                     <option value="low">Low Difficulty</option>
                     <option value="medium">Medium Difficulty</option>
@@ -251,14 +251,14 @@ export default function Tasks() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs font-semibold text-slate-300 mb-1 block">Estimated Time (Minutes)</label>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Estimated Time (Minutes)</label>
                   <input
                     type="number"
                     min="5"
                     max="300"
                     value={estimatedMinutes}
                     onChange={e => setEstimatedMinutes(e.target.value)}
-                    className="w-full bg-[#07090e] border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
+                    className="w-full bg-white dark:bg-[#07090e] border border-slate-300 dark:border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:border-indigo-500"
                   />
                 </div>
               </div>
@@ -277,27 +277,27 @@ export default function Tasks() {
       )}
 
       {/* Progress Metric Card */}
-      <Card className="orbit-card p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-[#0d1222]/90 via-[#0a0f1d]/80 to-[#10172a]/90">
+      <Card className="orbit-card p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex flex-col gap-1.5 min-w-[200px]">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-300 font-heading">Task Completion Index</span>
-            <span className="text-xs font-extrabold text-cyan-400 font-heading">{progressPercent}%</span>
+            <span className="text-xs font-bold text-slate-700 dark:text-slate-300 font-heading">Task Completion Index</span>
+            <span className="text-xs font-extrabold text-indigo-600 dark:text-cyan-400 font-heading">{progressPercent}%</span>
           </div>
           <ProgressBar value={progressPercent} variant="cyan" height="sm" animate />
         </div>
 
-        <div className="flex items-center gap-4 text-xs">
-          <div className="flex flex-col items-center p-2 rounded-xl bg-slate-900/60 border border-slate-800 min-w-[80px]">
-            <span className="text-slate-400 font-medium">Total</span>
-            <span className="text-sm font-bold text-slate-100 font-heading">{totalCount}</span>
+        <div className="flex items-center gap-3 text-xs">
+          <div className="flex flex-col items-center p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 min-w-[85px]">
+            <span className="text-slate-500 dark:text-slate-400 font-medium">Total</span>
+            <span className="text-sm font-bold text-slate-900 dark:text-slate-100 font-heading">{totalCount}</span>
           </div>
-          <div className="flex flex-col items-center p-2 rounded-xl bg-slate-900/60 border border-slate-800 min-w-[80px]">
-            <span className="text-slate-400 font-medium">Pending</span>
-            <span className="text-sm font-bold text-amber-400 font-heading">{totalCount - completedCount}</span>
+          <div className="flex flex-col items-center p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 min-w-[85px]">
+            <span className="text-slate-500 dark:text-slate-400 font-medium">Pending</span>
+            <span className="text-sm font-bold text-amber-600 dark:text-amber-400 font-heading">{totalCount - completedCount}</span>
           </div>
-          <div className="flex flex-col items-center p-2 rounded-xl bg-slate-900/60 border border-slate-800 min-w-[80px]">
-            <span className="text-slate-400 font-medium">Completed</span>
-            <span className="text-sm font-bold text-emerald-400 font-heading">{completedCount}</span>
+          <div className="flex flex-col items-center p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 min-w-[85px]">
+            <span className="text-slate-500 dark:text-slate-400 font-medium">Completed</span>
+            <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400 font-heading">{completedCount}</span>
           </div>
         </div>
       </Card>
@@ -305,15 +305,15 @@ export default function Tasks() {
       {/* Filter and Search Bar */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-3">
         {/* Status Tabs */}
-        <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-900/80 border border-slate-800/80 w-full md:w-auto">
+        <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-200/60 dark:bg-slate-900/80 border border-slate-300/80 dark:border-slate-800/80 w-full md:w-auto">
           {['all', 'pending', 'completed'].map(tab => (
             <button
               key={tab}
               onClick={() => setFilterTab(tab)}
-              className={`px-4 py-1.5 rounded-lg text-xs capitalize font-semibold transition-all flex-1 md:flex-initial ${
+              className={`px-4 py-1.5 rounded-lg text-xs capitalize font-semibold transition-all flex-1 md:flex-initial cursor-pointer ${
                 filterTab === tab
-                  ? 'bg-indigo-600/30 text-cyan-300 border border-indigo-500/40 shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-white dark:bg-indigo-600/30 text-indigo-600 dark:text-cyan-300 border border-slate-200 dark:border-indigo-500/40 shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
               {tab}
@@ -323,13 +323,13 @@ export default function Tasks() {
 
         {/* Search Input */}
         <div className="relative w-full md:w-72">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
           <input
             type="text"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             placeholder="Search tasks..."
-            className="w-full bg-[#07090e] border border-slate-800 rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
+            className="w-full bg-white dark:bg-[#07090e] border border-slate-300 dark:border-slate-800 rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
           />
         </div>
       </div>
@@ -341,16 +341,16 @@ export default function Tasks() {
         </div>
       ) : filteredTasks.length === 0 ? (
         <Card className="orbit-card p-12 text-center flex flex-col items-center">
-          <CheckSquare size={32} className="text-slate-600 mb-3" />
-          <h3 className="text-sm font-semibold text-slate-300">
+          <CheckSquare size={32} className="text-slate-400 dark:text-slate-600 mb-3" />
+          <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300">
             {tasks.length === 0 ? 'No tasks created yet' : 'No tasks match your filter criteria'}
           </h3>
-          <p className="text-xs text-slate-500 mt-1 max-w-sm">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm">
             {tasks.length === 0 ? "Click 'New Task' to add your first study or focus objective." : 'Try clearing your search or status filter.'}
           </p>
         </Card>
       ) : (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2.5">
           {filteredTasks.map(task => {
             const isCompleted = Boolean(task.completed || task.status === 'completed');
             const estMins = task.estimated_minutes || task.estimatedMinutes || 25;
@@ -358,8 +358,8 @@ export default function Tasks() {
             return (
               <motion.div key={task.id} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                 <Card
-                  className={`orbit-card p-4 transition-all group ${
-                    isCompleted ? 'bg-slate-950/40 border-slate-800/40 opacity-75' : 'border-slate-800/80 hover:border-slate-700'
+                  className={`orbit-card p-3.5 transition-all group ${
+                    isCompleted ? 'bg-slate-50/60 dark:bg-slate-950/40 border-slate-200/60 dark:border-slate-800/40 opacity-75' : 'hover:border-indigo-300 dark:hover:border-slate-700'
                   }`}
                 >
                   <div className="flex items-center justify-between gap-4">
@@ -367,10 +367,10 @@ export default function Tasks() {
                     <div className="flex items-center gap-3 min-w-0 flex-1">
                       <button
                         onClick={() => handleToggleTask(task)}
-                        className={`w-5 h-5 rounded-md flex items-center justify-center transition-all shrink-0 ${
+                        className={`w-5 h-5 rounded-md flex items-center justify-center transition-all shrink-0 cursor-pointer ${
                           isCompleted
-                            ? 'bg-emerald-500 text-slate-950 border border-emerald-400'
-                            : 'border-2 border-slate-700 hover:border-cyan-400 bg-slate-950/60'
+                            ? 'bg-gradient-to-tr from-emerald-500 to-sky-500 text-white dark:text-slate-950 border border-emerald-400 shadow-xs'
+                            : 'border-2 border-slate-300 dark:border-slate-700 hover:border-indigo-500 bg-white dark:bg-slate-950/60'
                         }`}
                       >
                         {isCompleted && <CheckCircle2 size={14} strokeWidth={3} />}
@@ -378,18 +378,18 @@ export default function Tasks() {
 
                       <div className="flex flex-col min-w-0 flex-1">
                         <span
-                          className={`text-sm font-semibold truncate ${
-                            isCompleted ? 'line-through text-slate-400' : 'text-slate-100'
+                          className={`text-xs md:text-sm font-semibold truncate ${
+                            isCompleted ? 'line-through text-slate-400 dark:text-slate-500' : 'text-slate-900 dark:text-slate-100'
                           }`}
                         >
                           {task.title}
                         </span>
-                        <div className="flex items-center gap-3 mt-1 text-[11px] text-slate-400">
+                        <div className="flex items-center gap-3 mt-0.5 text-[11px] text-slate-500 dark:text-slate-400">
                           <span className="flex items-center gap-1 font-mono">
-                            <Clock size={12} className="text-slate-500" />
+                            <Clock size={12} className="text-slate-400" />
                             {estMins} min
                           </span>
-                          <span className="capitalize text-slate-400">• {task.difficulty || 'medium'} difficulty</span>
+                          <span className="capitalize">• {task.difficulty || 'medium'} difficulty</span>
                         </div>
                       </div>
                     </div>
@@ -402,7 +402,7 @@ export default function Tasks() {
 
                       <button
                         onClick={() => handleEditClick(task)}
-                        className="opacity-0 group-hover:opacity-100 p-1.5 text-slate-400 hover:text-cyan-300 transition-all rounded-lg hover:bg-slate-800"
+                        className="opacity-0 group-hover:opacity-100 p-1.5 text-slate-400 hover:text-indigo-600 dark:hover:text-cyan-300 transition-all rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
                         title="Edit Task"
                       >
                         <Edit3 size={14} />
@@ -410,7 +410,7 @@ export default function Tasks() {
 
                       <button
                         onClick={() => handleDeleteTask(task.id)}
-                        className="opacity-0 group-hover:opacity-100 p-1.5 text-slate-400 hover:text-rose-400 transition-all rounded-lg hover:bg-slate-800"
+                        className="opacity-0 group-hover:opacity-100 p-1.5 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-all rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
                         title="Delete Task"
                       >
                         <Trash2 size={14} />

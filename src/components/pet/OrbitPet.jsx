@@ -95,7 +95,7 @@ export default function OrbitPet({
         className={`relative rounded-full bg-gradient-to-tr ${config.gradient} p-[2px] shadow-xl flex items-center justify-center ${sizeDimensions[size] || sizeDimensions.md}`}
       >
         {/* Inner Glass Core */}
-        <div className="w-full h-full rounded-full bg-[#0b0e17]/85 backdrop-blur-md flex flex-col items-center justify-center relative overflow-hidden">
+        <div className="w-full h-full rounded-full bg-slate-900/90 dark:bg-[#0b0e17]/85 backdrop-blur-md flex flex-col items-center justify-center relative overflow-hidden">
           {/* Subtle Ambient Core Light */}
           <div className="absolute inset-0 bg-radial from-white/15 via-transparent to-transparent opacity-60 pointer-events-none" />
 

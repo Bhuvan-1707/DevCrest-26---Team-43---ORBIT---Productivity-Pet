@@ -22,12 +22,12 @@ export default function Button({
   };
 
   const variantMap = {
-    primary: 'bg-gradient-to-r from-indigo-600 to-cyan-600 text-white shadow-md shadow-indigo-600/20 border border-indigo-400/20 hover:from-indigo-500 hover:to-cyan-500 hover:shadow-cyan-500/25',
-    secondary: 'bg-slate-900/80 border border-slate-800 text-slate-200 hover:bg-slate-800/80 hover:border-slate-700 hover:text-white shadow-xs',
-    outline: 'bg-transparent border border-indigo-500/40 text-indigo-300 hover:bg-indigo-500/10 hover:border-indigo-400',
-    ghost: 'bg-transparent text-slate-400 hover:text-slate-100 hover:bg-slate-800/50 border border-transparent',
-    accent: 'bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/20 hover:border-cyan-400/50',
-    danger: 'bg-rose-500/10 border border-rose-500/30 text-rose-300 hover:bg-rose-500/20 hover:border-rose-400/50',
+    primary: 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-500/25 border border-indigo-500/30 active:scale-[0.98]',
+    secondary: 'bg-white/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-800 shadow-xs',
+    outline: 'bg-transparent border border-indigo-500/40 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 hover:border-indigo-500',
+    ghost: 'bg-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800/50 border border-transparent',
+    accent: 'bg-cyan-500/10 border border-cyan-500/30 text-cyan-700 dark:text-cyan-300 hover:bg-cyan-500/20 hover:border-cyan-400/50',
+    danger: 'bg-rose-500/10 border border-rose-500/30 text-rose-700 dark:text-rose-300 hover:bg-rose-500/20 hover:border-rose-400/50',
   };
 
   const iconSizes = {
@@ -38,13 +38,13 @@ export default function Button({
 
   return (
     <motion.button
-      whileHover={!disabled && !loading ? { scale: 1.02 } : undefined}
+      whileHover={!disabled && !loading ? { scale: 1.01 } : undefined}
       whileTap={!disabled && !loading ? { scale: 0.98 } : undefined}
       type={type}
       disabled={disabled || loading}
       onClick={onClick}
       className={`
-        inline-flex items-center justify-center font-heading transition-all duration-200 select-none outline-hidden cursor-pointer
+        inline-flex items-center justify-center font-heading transition-all duration-200 select-none outline-none cursor-pointer
         disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none
         ${sizeMap[size] || sizeMap.md}
         ${variantMap[variant] || variantMap.primary}

@@ -10,11 +10,11 @@ import { observationService } from '../../services/observationService';
 import { getObservationTypeLabel, formatObservationTime } from '../../utils/observationUtils';
 
 const typeIconMap = {
-  [OBSERVATION_TYPES.SESSION_STARTED]: { icon: Play, color: 'text-cyan-400' },
-  [OBSERVATION_TYPES.SESSION_COMPLETED]: { icon: CheckCircle2, color: 'text-emerald-400' },
-  [OBSERVATION_TYPES.TASK_COMPLETED]: { icon: CheckSquare, color: 'text-emerald-400' },
-  [OBSERVATION_TYPES.PAGE_VIEW]: { icon: Compass, color: 'text-cyan-400' },
-  [OBSERVATION_TYPES.RECOVERY_STARTED]: { icon: Zap, color: 'text-amber-400' },
+  [OBSERVATION_TYPES.SESSION_STARTED]: { icon: Play, color: 'text-sky-600 dark:text-cyan-400' },
+  [OBSERVATION_TYPES.SESSION_COMPLETED]: { icon: CheckCircle2, color: 'text-emerald-600 dark:text-emerald-400' },
+  [OBSERVATION_TYPES.TASK_COMPLETED]: { icon: CheckSquare, color: 'text-emerald-600 dark:text-emerald-400' },
+  [OBSERVATION_TYPES.PAGE_VIEW]: { icon: Compass, color: 'text-sky-600 dark:text-cyan-400' },
+  [OBSERVATION_TYPES.RECOVERY_STARTED]: { icon: Zap, color: 'text-amber-600 dark:text-amber-400' },
 };
 
 export default function RecentActivityCard() {
@@ -48,12 +48,12 @@ export default function RecentActivityCard() {
         {/* Header */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <Activity size={16} className="text-cyan-400" />
-            <h3 className="text-sm font-bold text-slate-100 font-heading">
+            <Activity size={16} className="text-sky-600 dark:text-cyan-400" />
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 font-heading">
               Recent Activity
             </h3>
           </div>
-          <span className="text-[10px] uppercase tracking-wider font-semibold text-cyan-400/90 bg-cyan-500/10 px-2 py-0.5 rounded-full border border-cyan-500/20">
+          <span className="text-[10px] uppercase tracking-wider font-semibold text-sky-700 dark:text-cyan-400 bg-sky-50 dark:bg-cyan-500/10 px-2 py-0.5 rounded-full border border-sky-200 dark:border-cyan-500/20">
             Telemetry Stream
           </span>
         </div>
@@ -61,12 +61,12 @@ export default function RecentActivityCard() {
         {/* Activity List Stream (3 - 4 items) */}
         <div className="my-2 flex flex-col gap-2">
           {loading ? (
-            <div className="py-4 text-center text-xs text-slate-400">Loading activity...</div>
+            <div className="py-4 text-center text-xs text-slate-500 dark:text-slate-400">Loading activity...</div>
           ) : recentLogs.length === 0 ? (
-            <div className="py-4 text-center text-xs text-slate-400">No activity recorded yet.</div>
+            <div className="py-4 text-center text-xs text-slate-500 dark:text-slate-400">No activity recorded yet.</div>
           ) : (
             recentLogs.map((obs) => {
-              const iconConfig = typeIconMap[obs.type] || { icon: Clock, color: 'text-slate-400' };
+              const iconConfig = typeIconMap[obs.type] || { icon: Clock, color: 'text-slate-500 dark:text-slate-400' };
               const Icon = iconConfig.icon;
 
               return (
@@ -75,7 +75,7 @@ export default function RecentActivityCard() {
                   initial={{ opacity: 0, x: -5 }}
                   animate={{ opacity: 1, x: 0 }}
                   onClick={() => setSelectedObservation(obs)}
-                  className="flex items-center gap-2.5 p-2 rounded-lg bg-slate-900/50 border border-slate-800/60 hover:bg-slate-800/60 hover:border-slate-700 cursor-pointer transition-all group"
+                  className="flex items-center gap-2.5 p-2 rounded-lg bg-slate-50/80 dark:bg-slate-900/50 border border-slate-200/80 dark:border-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-700 cursor-pointer transition-all group"
                 >
                   <div className="shrink-0 flex items-center justify-center">
                     <span className={`text-[8px] mr-0.5 ${iconConfig.color}`}>●</span>
@@ -84,21 +84,21 @@ export default function RecentActivityCard() {
 
                   <div className="flex flex-col min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-1">
-                      <span className="text-xs font-bold text-slate-100 font-heading truncate group-hover:text-cyan-300 transition-colors">
+                      <span className="text-xs font-bold text-slate-900 dark:text-slate-100 font-heading truncate group-hover:text-indigo-600 dark:group-hover:text-cyan-300 transition-colors">
                         {getObservationTypeLabel(obs.type)}
                       </span>
-                      <span className="text-[10px] font-medium text-slate-400 shrink-0">
+                      <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400 shrink-0">
                         {formatObservationTime(obs.timestamp)}
                       </span>
                     </div>
                     {obs.activity?.name && (
-                      <span className="text-[11px] text-slate-300 truncate font-sans">
+                      <span className="text-[11px] text-slate-600 dark:text-slate-300 truncate font-sans">
                         {obs.activity.name}
                       </span>
                     )}
                   </div>
 
-                  <ChevronRight size={14} className="text-slate-600 group-hover:text-cyan-400 transition-colors shrink-0" />
+                  <ChevronRight size={14} className="text-slate-400 dark:text-slate-600 group-hover:text-indigo-600 dark:group-hover:text-cyan-400 transition-colors shrink-0" />
                 </motion.div>
               );
             })
@@ -106,12 +106,12 @@ export default function RecentActivityCard() {
         </div>
 
         {/* Footer Navigation Button */}
-        <div className="pt-3 border-t border-slate-800/60 mt-1">
+        <div className="pt-3 border-t border-slate-200/80 dark:border-slate-800/60 mt-1">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => navigate('/observations')}
-            className="w-full flex items-center justify-center gap-2 text-xs font-semibold text-cyan-400 hover:text-cyan-300"
+            className="w-full flex items-center justify-center gap-2 text-xs font-semibold text-indigo-600 dark:text-cyan-400 hover:text-indigo-700 dark:hover:text-cyan-300"
           >
             <span>View All Observations</span>
             <ArrowRight size={14} />

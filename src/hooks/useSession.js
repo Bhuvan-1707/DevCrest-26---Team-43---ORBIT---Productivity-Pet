@@ -3,7 +3,7 @@ import { api } from '../services/api';
 
 export function useSession() {
   const [completedSessions, setCompletedSessions] = useState([]);
-  const [focusState, setFocusState] = useState({ current: 82, change: 8 });
+  const [focusState, setFocusState] = useState({ current: 0, change: 0 });
   const [petState, setPetState] = useState('idle');
   const [loading, setLoading] = useState(true);
 

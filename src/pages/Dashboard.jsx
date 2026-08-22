@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import WelcomeHeader from '../components/dashboard/WelcomeHeader';
 import PetCard from '../components/dashboard/PetCard';
 import FocusCard from '../components/dashboard/FocusCard';
@@ -10,14 +11,45 @@ import RecoveryCard from '../components/dashboard/RecoveryCard';
 import InsightCard from '../components/dashboard/InsightCard';
 import RecentActivityCard from '../components/dashboard/RecentActivityCard';
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.05,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 30, scale: 0.97 },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.4,
+      ease: [0.16, 1, 0.3, 1],
+    },
+  },
+};
+
 export default function Dashboard() {
   return (
-    <div className="flex flex-col gap-6 max-w-7xl mx-auto w-full overflow-hidden">
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+      className="flex flex-col gap-6 max-w-7xl mx-auto w-full overflow-hidden"
+    >
       {/* 1. Welcome Header Hero */}
-      <WelcomeHeader />
+      <motion.div variants={itemVariants}>
+        <WelcomeHeader />
+      </motion.div>
 
       {/* 2. Top Metric Cards Row (Pet, Focus Target, Focus Score) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="sm:col-span-1">
           <PetCard />
         </div>
@@ -27,20 +59,20 @@ export default function Dashboard() {
         <div className="sm:col-span-2 lg:col-span-1">
           <FocusScore />
         </div>
-      </div>
+      </motion.div>
 
       {/* 3. Middle Core Row (Today's Tasks & Productivity Analytics) */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-1">
           <TodayTaskCard />
         </div>
         <div className="lg:col-span-2">
           <ProductivityOverview />
         </div>
-      </div>
+      </motion.div>
 
       {/* 4. Bottom Row 1 (Goal Progress, Recovery State, ORBIT Discovered) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="sm:col-span-1">
           <GoalProgress />
         </div>
@@ -50,12 +82,12 @@ export default function Dashboard() {
         <div className="sm:col-span-2 lg:col-span-1">
           <InsightCard />
         </div>
-      </div>
+      </motion.div>
 
       {/* 5. Telemetry Activity Stream Row (Recent Activity Widget) */}
-      <div className="grid grid-cols-1 gap-6">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 gap-6">
         <RecentActivityCard />
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

@@ -85,72 +85,72 @@ export default function ObservationSummary() {
       {/* Total Observations Card */}
       <Card className="orbit-card p-4 flex flex-col justify-between">
         <div className="flex items-center justify-between">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-400">TOTAL EVENTS</span>
-          <Activity size={15} className="text-cyan-400" />
+          <span className="text-[10px] font-bold uppercase tracking-wider text-sky-600 dark:text-cyan-400">TOTAL EVENTS</span>
+          <Activity size={15} className="text-sky-600 dark:text-cyan-400" />
         </div>
         <div className="mt-2">
-          <span className="text-2xl font-extrabold text-slate-100 font-heading">
+          <span className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 font-heading">
             {loading ? '...' : metrics.totalObservations}
           </span>
-          <p className="text-[10px] text-slate-400 mt-0.5">Stored observations</p>
+          <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Stored observations</p>
         </div>
       </Card>
 
       {/* Sessions Today Card */}
       <Card className="orbit-card p-4 flex flex-col justify-between">
         <div className="flex items-center justify-between">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-400">SESSIONS TODAY</span>
-          <Play size={15} className="text-indigo-400" />
+          <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">SESSIONS TODAY</span>
+          <Play size={15} className="text-indigo-600 dark:text-indigo-400" />
         </div>
         <div className="mt-2">
-          <span className="text-2xl font-extrabold text-slate-100 font-heading">
+          <span className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 font-heading">
             {loading ? '...' : metrics.sessionsToday}
           </span>
-          <p className="text-[10px] text-slate-400 mt-0.5">Focus cycles run</p>
+          <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Focus cycles run</p>
         </div>
       </Card>
 
       {/* Tasks Completed Today Card */}
       <Card className="orbit-card p-4 flex flex-col justify-between">
         <div className="flex items-center justify-between">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400">TASKS DONE TODAY</span>
-          <CheckSquare size={15} className="text-emerald-400" />
+          <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">TASKS DONE TODAY</span>
+          <CheckSquare size={15} className="text-emerald-600 dark:text-emerald-400" />
         </div>
         <div className="mt-2">
-          <span className="text-2xl font-extrabold text-slate-100 font-heading">
+          <span className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 font-heading">
             {loading ? '...' : metrics.tasksCompletedToday}
           </span>
-          <p className="text-[10px] text-slate-400 mt-0.5">Completed items</p>
+          <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Completed items</p>
         </div>
       </Card>
 
       {/* Total Focus Minutes Card */}
       <Card className="orbit-card p-4 flex flex-col justify-between">
         <div className="flex items-center justify-between">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-amber-400">FOCUS MINUTES</span>
-          <Clock size={15} className="text-amber-400" />
+          <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">FOCUS MINUTES</span>
+          <Clock size={15} className="text-amber-600 dark:text-amber-400" />
         </div>
         <div className="mt-2">
-          <span className="text-2xl font-extrabold text-slate-100 font-heading">
+          <span className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 font-heading">
             {loading ? '...' : `${metrics.totalFocusMinutes}m`}
           </span>
-          <p className="text-[10px] text-slate-400 mt-0.5">Cumulative duration</p>
+          <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">Cumulative duration</p>
         </div>
       </Card>
 
       {/* Most Recent Activity Card */}
-      <Card className="orbit-card p-4 flex flex-col justify-between border-cyan-500/30">
+      <Card className="orbit-card p-4 flex flex-col justify-between border-sky-200 dark:border-cyan-500/30">
         <div className="flex items-center justify-between">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-300 flex items-center gap-1">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-sky-700 dark:text-cyan-300 flex items-center gap-1">
             <Sparkles size={12} /> RECENT ACTIVITY
           </span>
           <Badge variant="cyan" size="sm">Live</Badge>
         </div>
         <div className="mt-2">
-          <p className="text-xs font-bold text-slate-100 font-heading truncate">
+          <p className="text-xs font-bold text-slate-900 dark:text-slate-100 font-heading truncate">
             {loading ? '...' : metrics.mostRecentActivity?.activity?.name || 'No Activity'}
           </p>
-          <p className="text-[10px] text-cyan-400 mt-0.5 font-medium">
+          <p className="text-[10px] text-sky-600 dark:text-cyan-400 mt-0.5 font-medium">
             {metrics.mostRecentActivity ? formatObservationTime(metrics.mostRecentActivity.timestamp) : 'N/A'}
           </p>
         </div>

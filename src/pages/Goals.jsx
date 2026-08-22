@@ -94,12 +94,12 @@ export default function Goals() {
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
-            <Compass className="text-indigo-400" size={20} />
-            <h1 className="text-xl lg:text-2xl font-bold text-slate-100 font-heading">
+            <Compass className="text-indigo-600 dark:text-indigo-400" size={20} />
+            <h1 className="text-xl lg:text-2xl font-bold text-slate-900 dark:text-slate-100 font-heading">
               Goal Progress & Milestones
             </h1>
           </div>
-          <p className="text-xs lg:text-sm text-slate-400">
+          <p className="text-xs lg:text-sm text-slate-600 dark:text-slate-400">
             Track long-term productivity objectives and milestone targets.
           </p>
         </div>
@@ -116,7 +116,7 @@ export default function Goals() {
 
       {/* Error Banner */}
       {error && (
-        <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs flex items-center gap-2">
+        <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-300 text-xs flex items-center gap-2">
           <AlertCircle size={15} />
           <span>{error}</span>
         </div>
@@ -126,39 +126,39 @@ export default function Goals() {
       {showAddForm && (
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
           <Card className="orbit-card p-6 border-indigo-500/30">
-            <h3 className="text-sm font-bold text-slate-100 font-heading mb-4">Create New Goal</h3>
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 font-heading mb-4">Create New Goal</h3>
             <form onSubmit={handleCreateGoal} className="flex flex-col gap-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-semibold text-slate-300 mb-1 block">Goal Title</label>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Goal Title</label>
                   <input
                     type="text"
                     required
                     value={newTitle}
                     onChange={e => setNewTitle(e.target.value)}
                     placeholder="e.g. Master Operating Systems & Networking"
-                    className="w-full bg-[#07090e] border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
+                    className="w-full bg-white dark:bg-[#07090e] border border-slate-300 dark:border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-semibold text-slate-300 mb-1 block">Milestones Target</label>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Milestones Target</label>
                   <input
                     type="number"
                     min="1"
                     value={newTarget}
                     onChange={e => setNewTarget(e.target.value)}
-                    className="w-full bg-[#07090e] border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-indigo-500"
+                    className="w-full bg-white dark:bg-[#07090e] border border-slate-300 dark:border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:border-indigo-500"
                   />
                 </div>
               </div>
               <div>
-                <label className="text-xs font-semibold text-slate-300 mb-1 block">Description</label>
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Description</label>
                 <textarea
                   rows={2}
                   value={newDescription}
                   onChange={e => setNewDescription(e.target.value)}
                   placeholder="Summary of this goal..."
-                  className="w-full bg-[#07090e] border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-white dark:bg-[#07090e] border border-slate-300 dark:border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
                 />
               </div>
               <div className="flex justify-end gap-2">
@@ -176,9 +176,9 @@ export default function Goals() {
         </div>
       ) : goals.length === 0 ? (
         <Card className="orbit-card p-12 text-center flex flex-col items-center">
-          <Compass size={32} className="text-slate-600 mb-3" />
-          <h3 className="text-sm font-semibold text-slate-300">No active goals yet</h3>
-          <p className="text-xs text-slate-500 mt-1 max-w-sm">Click 'New Goal' to establish your first personal milestone target.</p>
+          <Compass size={32} className="text-slate-400 dark:text-slate-600 mb-3" />
+          <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300">No active goals yet</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm">Click 'New Goal' to establish your first personal milestone target.</p>
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -196,29 +196,29 @@ export default function Goals() {
                     </Badge>
                     <button
                       onClick={() => handleDeleteGoal(g.id)}
-                      className="opacity-0 group-hover:opacity-100 p-1 text-slate-500 hover:text-rose-400 transition-all"
+                      className="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-all cursor-pointer"
                       title="Delete Goal"
                     >
                       <Trash2 size={15} />
                     </button>
                   </div>
 
-                  <h3 className="text-base font-bold text-slate-100 font-heading mt-1">{g.title}</h3>
-                  {g.description && <p className="text-xs text-slate-400 line-clamp-2">{g.description}</p>}
+                  <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 font-heading mt-1">{g.title}</h3>
+                  {g.description && <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2">{g.description}</p>}
                 </div>
 
                 <div className="my-5 flex flex-col gap-2">
                   <ProgressBar value={percent} variant="gradient" height="md" showLabel />
                 </div>
 
-                <div className="flex items-center justify-between pt-3 border-t border-slate-800/60 text-xs">
-                  <span className="text-slate-400">{current} / {target} Milestones</span>
+                <div className="flex items-center justify-between pt-3 border-t border-slate-200/80 dark:border-slate-800/60 text-xs">
+                  <span className="text-slate-500 dark:text-slate-400 font-medium">{current} / {target} Milestones</span>
                   {g.status !== 'completed' && (
                     <button
                       onClick={() => handleIncrementProgress(g)}
-                      className="px-2.5 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/20 hover:bg-indigo-500/20 text-indigo-300 text-xs font-semibold flex items-center gap-1 transition-all"
+                      className="px-3 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 hover:bg-indigo-100 dark:hover:bg-indigo-500/20 text-indigo-600 dark:text-indigo-300 text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
                     >
-                      <CheckCircle2 size={13} />
+                      <CheckCircle2 size={14} />
                       +1 Progress
                     </button>
                   )}

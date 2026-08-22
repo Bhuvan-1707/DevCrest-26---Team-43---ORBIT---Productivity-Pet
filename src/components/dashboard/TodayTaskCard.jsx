@@ -4,7 +4,6 @@ import { Check, ListTodo, Plus, Trash2 } from 'lucide-react';
 import Card from '../common/Card';
 import Badge from '../common/Badge';
 import ProgressBar from '../common/ProgressBar';
-import { api } from '../../services/api';
 import { tasksApi } from '../../services/api/tasksApi';
 import { OBSERVATION_TYPES } from '../../data/observationData';
 import { observationService } from '../../services/observationService';
@@ -108,11 +107,12 @@ export default function TodayTaskCard() {
     setIsAdding(false);
 
     try {
-      const createdTask = await api.createTask({
+      const res = await tasksApi.createTask({
         title: titleToAdd,
         category: 'General',
         difficulty: 'medium',
       });
+      const createdTask = res?.data || res;
       setTasks(prev => [createdTask, ...prev]);
     } catch (err) {
       console.error('[TodayTaskCard] Error creating task:', err);
@@ -140,8 +140,8 @@ export default function TodayTaskCard() {
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <ListTodo size={16} className="text-cyan-400" />
-            <h3 className="text-sm font-bold text-slate-100 font-heading">
+            <ListTodo size={16} className="text-sky-600 dark:text-cyan-400" />
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 font-heading">
               Today's Tasks
             </h3>
           </div>
@@ -151,7 +151,7 @@ export default function TodayTaskCard() {
             </Badge>
             <button
               onClick={() => setIsAdding(!isAdding)}
-              className="p-1 rounded-lg bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 transition-all border border-slate-700/60"
+              className="p-1 rounded-lg bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700/80 text-slate-700 dark:text-slate-300 transition-all border border-slate-200 dark:border-slate-700/60 cursor-pointer"
               title="Add New Task"
             >
               <Plus size={14} />
@@ -177,11 +177,11 @@ export default function TodayTaskCard() {
             value={newTaskTitle}
             onChange={(e) => setNewTaskTitle(e.target.value)}
             placeholder="New task title..."
-            className="flex-1 bg-[#07090e] border border-slate-700/80 rounded-xl px-3 py-1.5 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
+            className="flex-1 bg-white dark:bg-[#07090e] border border-slate-300 dark:border-slate-700/80 rounded-xl px-3 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
           />
           <button
             type="submit"
-            className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl transition-all"
+            className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-xl transition-all cursor-pointer"
           >
             Add
           </button>
@@ -209,8 +209,8 @@ export default function TodayTaskCard() {
               className={`
                 flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer select-none group
                 ${task.completed 
-                  ? 'bg-slate-900/30 border-slate-800/40 opacity-75' 
-                  : 'bg-slate-900/60 border-slate-800/80 hover:border-slate-700/80 hover:bg-slate-800/40'}
+                  ? 'bg-slate-100/60 dark:bg-slate-900/30 border-slate-200/60 dark:border-slate-800/40 opacity-75' 
+                  : 'bg-white/80 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800/80 hover:border-indigo-300 dark:hover:border-slate-700/80 hover:bg-slate-50 dark:hover:bg-slate-800/40'}
               `}
             >
               <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -219,8 +219,8 @@ export default function TodayTaskCard() {
                   className={`
                     w-5 h-5 rounded-md flex items-center justify-center transition-all duration-200 shrink-0
                     ${task.completed 
-                      ? 'bg-gradient-to-tr from-emerald-500 to-cyan-500 text-slate-950 border border-emerald-400 shadow-sm shadow-emerald-500/20' 
-                      : 'border-2 border-slate-700 bg-slate-950/60 hover:border-cyan-400/60'}
+                      ? 'bg-gradient-to-tr from-emerald-500 to-sky-500 text-white dark:text-slate-950 border border-emerald-400 shadow-xs' 
+                      : 'border-2 border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950/60 hover:border-sky-500/60'}
                   `}
                 >
                   <AnimatePresence mode="wait">
@@ -239,7 +239,7 @@ export default function TodayTaskCard() {
 
                 {/* Task Title */}
                 <span className={`text-xs font-medium truncate transition-all ${
-                  task.completed ? 'line-through text-slate-400' : 'text-slate-200'
+                  task.completed ? 'line-through text-slate-400 dark:text-slate-500' : 'text-slate-800 dark:text-slate-200'
                 }`}>
                   {task.title}
                 </span>
@@ -249,8 +249,8 @@ export default function TodayTaskCard() {
                 {/* Task Category / Metadata Badge */}
                 <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md ml-2 shrink-0 ${
                   task.completed 
-                    ? 'bg-slate-900/80 text-slate-400 border border-slate-800/60' 
-                    : 'bg-slate-800/60 text-slate-400 border border-slate-700/50'
+                    ? 'bg-slate-100 dark:bg-slate-900/80 text-slate-400 border border-slate-200 dark:border-slate-800/60' 
+                    : 'bg-slate-100 dark:bg-slate-800/60 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700/50'
                 }`}>
                   {task.category || task.difficulty}
                 </span>
@@ -258,7 +258,7 @@ export default function TodayTaskCard() {
                 {/* Delete Button */}
                 <button
                   onClick={(e) => handleDeleteTask(e, task.id)}
-                  className="opacity-0 group-hover:opacity-100 p-1 text-slate-500 hover:text-rose-400 transition-all"
+                  className="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-all cursor-pointer"
                   title="Delete Task"
                 >
                   <Trash2 size={13} />
@@ -270,9 +270,9 @@ export default function TodayTaskCard() {
       </div>
 
       {/* Task Card Footer */}
-      <div className="pt-2 flex items-center justify-between text-[11px] text-slate-400 border-t border-slate-800/60">
+      <div className="pt-2 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 border-t border-slate-200/80 dark:border-slate-800/60">
         <span>Click task to toggle completion</span>
-        <span className="text-cyan-400/90 font-semibold">{progressPercent}% complete</span>
+        <span className="text-sky-600 dark:text-cyan-400 font-semibold">{progressPercent}% complete</span>
       </div>
     </Card>
   );

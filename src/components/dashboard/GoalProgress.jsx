@@ -38,8 +38,8 @@ export default function GoalProgress() {
   }
 
   const current = goal?.current_progress || 0;
-  const target = goal?.target || 10;
-  const progressPercent = Math.min(Math.round((current / target) * 100), 100);
+  const target = goal?.target || (goal ? 10 : 0);
+  const progressPercent = target > 0 ? Math.min(Math.round((current / target) * 100), 100) : 0;
 
   return (
     <Card className="orbit-card flex flex-col justify-between h-full relative overflow-hidden">
@@ -47,17 +47,17 @@ export default function GoalProgress() {
       <div className="flex flex-col gap-1">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Compass size={16} className="text-cyan-400" />
-            <span className="text-[11px] font-bold uppercase tracking-widest text-indigo-400">
+            <Compass size={16} className="text-sky-600 dark:text-cyan-400" />
+            <span className="text-[11px] font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
               CURRENT GOAL
             </span>
           </div>
-          <Badge variant={progressPercent === 100 ? 'emerald' : 'indigo'} size="sm">
-            {current}/{target} Progress
+          <Badge variant={!goal ? 'default' : progressPercent === 100 ? 'emerald' : 'indigo'} size="sm">
+            {goal ? `${current}/${target} Progress` : 'No Goal'}
           </Badge>
         </div>
 
-        <h3 className="text-base font-bold text-slate-100 font-heading tracking-tight mt-1 truncate">
+        <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 font-heading tracking-tight mt-1 truncate">
           {goal?.title || 'No active goal set'}
         </h3>
       </div>
@@ -74,21 +74,21 @@ export default function GoalProgress() {
       </div>
 
       {/* Milestones & Next Step Footer */}
-      <div className="flex flex-col gap-2.5 pt-3 border-t border-slate-800/60">
+      <div className="flex flex-col gap-2.5 pt-3 border-t border-slate-200/80 dark:border-slate-800/60">
         <div className="flex items-center justify-between text-xs">
-          <span className="text-slate-400 font-medium flex items-center gap-1.5">
-            <CheckCircle2 size={14} className="text-emerald-400" />
+          <span className="text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1.5">
+            <CheckCircle2 size={14} className="text-emerald-600 dark:text-emerald-400" />
             Milestones complete
           </span>
-          <span className="font-bold text-slate-200">
+          <span className="font-bold text-slate-800 dark:text-slate-200">
             {current} / {target}
           </span>
         </div>
 
-        <div className="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800/80 flex items-center justify-between text-xs">
+        <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 flex items-center justify-between text-xs">
           <div className="flex flex-col gap-0.5">
-            <span className="text-[10px] uppercase font-bold text-cyan-400 tracking-wider">Status</span>
-            <span className="text-slate-200 font-medium truncate max-w-[200px] capitalize">{goal?.status || 'active'}</span>
+            <span className="text-[10px] uppercase font-bold text-sky-600 dark:text-cyan-400 tracking-wider">Status</span>
+            <span className="text-slate-800 dark:text-slate-200 font-medium truncate max-w-[200px] capitalize">{goal?.status || 'inactive'}</span>
           </div>
           <ArrowRight size={14} className="text-slate-400 shrink-0" />
         </div>

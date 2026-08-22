@@ -44,7 +44,7 @@ export default function FocusScore() {
   if (loading) {
     return (
       <Card className="orbit-card flex items-center justify-center h-full min-h-[220px]">
-        <div className="w-6 h-6 border-2 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin"></div>
+        <div className="w-6 h-6 border-2 border-sky-500/30 border-t-sky-500 rounded-full animate-spin"></div>
       </Card>
     );
   }
@@ -54,8 +54,8 @@ export default function FocusScore() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Target size={16} className="text-cyan-400" />
-          <h3 className="text-sm font-bold text-slate-100 font-heading">
+          <Target size={16} className="text-sky-600 dark:text-cyan-400" />
+          <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 font-heading">
             Focus Score
           </h3>
         </div>
@@ -74,7 +74,7 @@ export default function FocusScore() {
             r="45"
             stroke="currentColor"
             strokeWidth="8"
-            className="text-slate-800/80"
+            className="text-slate-200 dark:text-slate-800/80"
             fill="transparent"
           />
           {/* Animated Progress Arc */}
@@ -92,27 +92,27 @@ export default function FocusScore() {
           />
           <defs>
             <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#38bdf8" />
-              <stop offset="100%" stopColor="#6366f1" />
+              <stop offset="0%" stopColor="#0284c7" />
+              <stop offset="100%" stopColor="#4f46e5" />
             </linearGradient>
           </defs>
         </svg>
 
         {/* Center Score Label */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-          <span className="text-3xl font-extrabold text-slate-100 font-heading leading-none">
+          <span className="text-3xl font-extrabold text-slate-900 dark:text-slate-100 font-heading leading-none">
             {score}
           </span>
-          <span className="text-[10px] text-slate-400 font-medium tracking-wide">
+          <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium tracking-wide">
             / 100
           </span>
         </div>
       </div>
 
       {/* Trend Meta Footer */}
-      <div className="pt-3 border-t border-slate-800/60 flex items-center justify-between text-xs">
-        <span className="text-slate-400">{sessionCount} Sessions Recorded</span>
-        <span className="flex items-center gap-1 font-bold text-emerald-400">
+      <div className="pt-3 border-t border-slate-200/80 dark:border-slate-800/60 flex items-center justify-between text-xs">
+        <span className="text-slate-500 dark:text-slate-400">{sessionCount} Sessions Recorded</span>
+        <span className="flex items-center gap-1 font-bold text-emerald-600 dark:text-emerald-400">
           <TrendingUp size={13} />
           {totalMinutes > 0 ? `${totalMinutes} focus min` : 'Optimal index'}
         </span>

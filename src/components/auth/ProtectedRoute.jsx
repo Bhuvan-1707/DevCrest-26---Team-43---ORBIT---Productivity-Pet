@@ -8,10 +8,10 @@ export default function ProtectedRoute({ children }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#07090e] flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-[#07090e] text-slate-700 dark:text-slate-400 flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin"></div>
-          <p className="text-slate-400 text-xs font-mono tracking-wider">VERIFYING ORBIT SESSION...</p>
+          <p className="text-xs font-mono tracking-wider text-slate-500 dark:text-slate-400">VERIFYING ORBIT SESSION...</p>
         </div>
       </div>
     );

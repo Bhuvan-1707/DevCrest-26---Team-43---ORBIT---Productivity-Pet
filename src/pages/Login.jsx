@@ -47,22 +47,22 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-[#07090e] text-slate-100 flex items-center justify-center p-4 relative overflow-hidden font-sans">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#07090e] text-slate-900 dark:text-slate-100 flex items-center justify-center p-4 relative overflow-hidden font-sans select-none">
       {/* Dynamic Ambient Background Glows */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-600/15 rounded-full blur-3xl pointer-events-none"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-500/10 dark:bg-indigo-600/15 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-sky-400/10 dark:bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
       <div className="w-full max-w-md relative z-10">
         {/* Header Branding */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold mb-4 shadow-sm">
-            <Sparkles size={14} className="animate-pulse text-cyan-400" />
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 text-indigo-700 dark:text-indigo-400 text-xs font-semibold mb-4 shadow-xs">
+            <Sparkles size={14} className="animate-pulse text-sky-600 dark:text-cyan-400" />
             <span>ORBIT Productivity System</span>
           </div>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight font-heading">
+          <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight font-heading">
             {isRegister ? 'Create Your Account' : 'Welcome Back'}
           </h1>
-          <p className="text-sm text-slate-400 mt-2">
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
             {isRegister
               ? 'Join ORBIT to unlock adaptive productivity & micro-break recovery'
               : 'Sign in to access your tasks, focus sessions, and insights'}
@@ -70,16 +70,16 @@ export default function Login() {
         </div>
 
         {/* Auth Card */}
-        <div className="bg-[#0e1320]/80 border border-slate-800/80 rounded-2xl p-6 sm:p-8 backdrop-blur-xl shadow-2xl">
+        <div className="bg-white/80 dark:bg-[#0e1320]/80 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-6 sm:p-8 backdrop-blur-xl shadow-xl shadow-slate-900/5 dark:shadow-2xl">
           {/* Mode Switcher Tabs */}
-          <div className="flex bg-[#07090e] p-1 rounded-xl border border-slate-800/60 mb-6">
+          <div className="flex bg-slate-100 dark:bg-[#07090e] p-1 rounded-xl border border-slate-200 dark:border-slate-800/60 mb-6">
             <button
               type="button"
               onClick={() => { setIsRegister(false); setError(''); }}
-              className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${
+              className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
                 !isRegister
                   ? 'bg-indigo-600 text-white shadow-md'
-                  : 'text-slate-400 hover:text-slate-200'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
               Sign In
@@ -87,10 +87,10 @@ export default function Login() {
             <button
               type="button"
               onClick={() => { setIsRegister(true); setError(''); }}
-              className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${
+              className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
                 isRegister
                   ? 'bg-indigo-600 text-white shadow-md'
-                  : 'text-slate-400 hover:text-slate-200'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
               Create Account
@@ -99,7 +99,7 @@ export default function Login() {
 
           {/* Error Banner */}
           {error && (
-            <div className="mb-5 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs flex items-start gap-2.5 leading-relaxed">
+            <div className="mb-5 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-400 text-xs flex items-start gap-2.5 leading-relaxed">
               <AlertCircle size={16} className="shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
@@ -109,7 +109,7 @@ export default function Login() {
           <form onSubmit={handleSubmit} className="space-y-4">
             {isRegister && (
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                   Full Name
                 </label>
                 <div className="relative">
@@ -120,14 +120,14 @@ export default function Login() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Bhuvanesh"
-                    className="w-full bg-[#07090e] border border-slate-800 rounded-xl px-10 py-2.5 text-sm text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                    className="w-full bg-white dark:bg-[#07090e] border border-slate-300 dark:border-slate-800 rounded-xl px-10 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
                   />
                 </div>
               </div>
             )}
 
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                 Email Address
               </label>
               <div className="relative">
@@ -138,13 +138,13 @@ export default function Login() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="bhuvan@orbit.dev"
-                  className="w-full bg-[#07090e] border border-slate-800 rounded-xl px-10 py-2.5 text-sm text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                  className="w-full bg-white dark:bg-[#07090e] border border-slate-300 dark:border-slate-800 rounded-xl px-10 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                 Password
               </label>
               <div className="relative">
@@ -155,7 +155,7 @@ export default function Login() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
-                  className="w-full bg-[#07090e] border border-slate-800 rounded-xl px-10 py-2.5 text-sm text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
+                  className="w-full bg-white dark:bg-[#07090e] border border-slate-300 dark:border-slate-800 rounded-xl px-10 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all"
                 />
               </div>
             </div>
@@ -163,7 +163,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full mt-2 py-3 px-4 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white text-sm font-semibold rounded-xl transition-all shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full mt-2 py-3 px-4 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white text-sm font-semibold rounded-xl transition-all shadow-md shadow-indigo-600/20 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {submitting ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -177,9 +177,9 @@ export default function Login() {
           </form>
 
           {/* Footer Security Badge */}
-          <div className="mt-6 pt-5 border-t border-slate-800/60 text-center">
-            <p className="text-[11px] text-slate-500 flex items-center justify-center gap-1.5">
-              <Shield size={13} className="text-indigo-400" />
+          <div className="mt-6 pt-5 border-t border-slate-200 dark:border-slate-800/60 text-center">
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-center gap-1.5">
+              <Shield size={13} className="text-indigo-600 dark:text-indigo-400" />
               <span>Secured with JWT Token Authentication & bcrypt hashing</span>
             </p>
           </div>

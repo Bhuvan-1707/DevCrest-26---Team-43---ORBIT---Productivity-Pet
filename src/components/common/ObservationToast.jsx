@@ -13,7 +13,7 @@ const TARGET_EVENT_CONFIG = {
     getMessage: (obs) => ({
       title: '✦ ORBIT observed',
       message: 'Focus session completed.',
-      subtext: `${obs.activity?.duration || 45} minutes recorded.`,
+      subtext: `${obs.activity?.duration !== undefined ? obs.activity.duration : (obs.metadata?.plannedDurationMinutes || 'Focus')} minutes recorded.`,
     }),
   },
   [OBSERVATION_TYPES.TASK_COMPLETED]: {

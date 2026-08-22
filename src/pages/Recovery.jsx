@@ -81,12 +81,12 @@ export default function Recovery() {
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
-            <Activity className="text-emerald-400" size={20} />
-            <h1 className="text-xl lg:text-2xl font-bold text-slate-100 font-heading">
+            <Activity className="text-emerald-600 dark:text-emerald-400" size={20} />
+            <h1 className="text-xl lg:text-2xl font-bold text-slate-900 dark:text-slate-100 font-heading">
               Recovery Engine & Energy Rhythm
             </h1>
           </div>
-          <p className="text-xs lg:text-sm text-slate-400">
+          <p className="text-xs lg:text-sm text-slate-600 dark:text-slate-400">
             Monitor cognitive fatigue, rest breaks, and energy recovery protocols.
           </p>
         </div>
@@ -103,7 +103,7 @@ export default function Recovery() {
 
       {/* Error Banner */}
       {error && (
-        <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs flex items-center gap-2">
+        <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-300 text-xs flex items-center gap-2">
           <AlertCircle size={15} />
           <span>{error}</span>
         </div>
@@ -111,15 +111,15 @@ export default function Recovery() {
 
       {/* Active Recovery Spotlight */}
       {activeSession && (
-        <Card glow className="orbit-card p-6 border-emerald-500/30 flex items-center justify-between">
+        <Card glow className="orbit-card p-6 border-emerald-500/30 flex items-center justify-between bg-gradient-to-r from-emerald-50/80 via-teal-50/40 to-white/90 dark:from-[#0a1814]/90 dark:via-[#081412]/80 dark:to-[#0c1f1a]/90">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
               <Coffee size={24} />
             </div>
             <div>
               <Badge variant="emerald" pulse size="sm">Active Recovery Break</Badge>
-              <h3 className="text-base font-bold text-slate-100 font-heading mt-1">15-Minute Micro Rest in Progress</h3>
-              <p className="text-xs text-slate-400">{activeSession.reason}</p>
+              <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 font-heading mt-1">15-Minute Micro Rest in Progress</h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400">{activeSession.reason}</p>
             </div>
           </div>
 
@@ -140,13 +140,13 @@ export default function Recovery() {
         </div>
       ) : sessions.length === 0 ? (
         <Card className="orbit-card p-12 text-center flex flex-col items-center">
-          <Coffee size={32} className="text-slate-600 mb-3" />
-          <h3 className="text-sm font-semibold text-slate-300">No recovery sessions recorded yet</h3>
-          <p className="text-xs text-slate-500 mt-1 max-w-sm">Click 'Start 15-Min Break' to record your first rest cycle.</p>
+          <Coffee size={32} className="text-slate-400 dark:text-slate-600 mb-3" />
+          <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300">No recovery sessions recorded yet</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm">Click 'Start 15-Min Break' to record your first rest cycle.</p>
         </Card>
       ) : (
         <div className="flex flex-col gap-3">
-          <h3 className="text-sm font-bold text-slate-200 font-heading">Recovery Logs</h3>
+          <h3 className="text-sm font-bold text-slate-900 dark:text-slate-200 font-heading">Recovery Logs</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {sessions.map(s => (
               <Card key={s.id} className="orbit-card p-5 flex flex-col justify-between">
@@ -154,17 +154,17 @@ export default function Recovery() {
                   <Badge variant={s.status === 'completed' ? 'emerald' : 'amber'} size="sm">
                     {s.status || 'started'}
                   </Badge>
-                  <span className="text-[11px] text-slate-500 font-mono">
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400 font-mono">
                     {s.created_at ? new Date(s.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Today'}
                   </span>
                 </div>
 
-                <div className="flex items-center gap-2 text-slate-200 text-sm font-semibold mb-1">
-                  <Clock size={15} className="text-emerald-400" />
+                <div className="flex items-center gap-2 text-slate-900 dark:text-slate-200 text-sm font-semibold mb-1">
+                  <Clock size={15} className="text-emerald-600 dark:text-emerald-400" />
                   <span>{s.duration || 15} Minutes Rest</span>
                 </div>
 
-                <p className="text-xs text-slate-400 italic line-clamp-2">"{s.reason || 'Focus break'}"</p>
+                <p className="text-xs text-slate-600 dark:text-slate-400 italic line-clamp-2">"{s.reason || 'Focus break'}"</p>
               </Card>
             ))}
           </div>

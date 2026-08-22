@@ -11,8 +11,8 @@ export const pool = mariadb.createPool({
   password: config.db.password,
   database: config.db.name,
   connectionLimit: 10,
-  connectTimeout: 1000,
-  acquireTimeout: 1000,
+  connectTimeout: 10000,
+  acquireTimeout: 10000,
 });
 
 /**

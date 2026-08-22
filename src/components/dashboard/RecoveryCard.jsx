@@ -96,8 +96,8 @@ export default function RecoveryCard() {
       <div className="flex flex-col gap-1">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Activity size={16} className="text-emerald-400" />
-            <span className="text-[11px] font-bold uppercase tracking-widest text-emerald-400">
+            <Activity size={16} className="text-emerald-600 dark:text-emerald-400" />
+            <span className="text-[11px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
               RECOVERY
             </span>
           </div>
@@ -106,36 +106,36 @@ export default function RecoveryCard() {
           </Badge>
         </div>
 
-        <h3 className="text-base font-bold text-slate-100 font-heading tracking-tight mt-1">
+        <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 font-heading tracking-tight mt-1">
           Recovery Engine
         </h3>
       </div>
 
       {/* Recovery Status Metrics */}
-      <div className="grid grid-cols-2 gap-3 my-4 p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
+      <div className="grid grid-cols-2 gap-3 my-4 p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80">
         <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-lg bg-slate-800 text-slate-300">
+          <div className="p-2 rounded-lg bg-slate-200/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
             <Clock size={15} />
           </div>
           <div className="flex flex-col">
-            <span className="text-[10px] text-slate-400 uppercase font-medium">Status</span>
-            <span className="text-xs font-bold text-slate-200 capitalize">{lastRecovery?.status || 'Ready'}</span>
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-medium">Status</span>
+            <span className="text-xs font-bold text-slate-800 dark:text-slate-200 capitalize">{lastRecovery?.status || 'Ready'}</span>
           </div>
         </div>
 
         <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          <div className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
             <Coffee size={15} />
           </div>
           <div className="flex flex-col">
-            <span className="text-[10px] text-slate-400 uppercase font-medium">Target</span>
-            <span className="text-xs font-bold text-emerald-300">{lastRecovery?.duration || 15} min break</span>
+            <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-medium">Target</span>
+            <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300">{lastRecovery?.duration || 15} min break</span>
           </div>
         </div>
       </div>
 
       {/* Context Note */}
-      <p className="text-xs text-slate-400 italic mb-4">
+      <p className="text-xs text-slate-500 dark:text-slate-400 italic mb-4">
         "{lastRecovery?.reason || 'Take micro-rest breaks between focus windows to maintain energy.'}"
       </p>
 

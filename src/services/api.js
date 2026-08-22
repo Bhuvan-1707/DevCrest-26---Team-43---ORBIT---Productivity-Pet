@@ -1,15 +1,3 @@
-import { 
-  mockUser, 
-  mockTasks, 
-  mockFocus, 
-  mockWeeklyProductivity, 
-  mockGoal, 
-  mockRecovery, 
-  mockInsights, 
-  mockMemories, 
-  mockProtocol,
-  mockPetState 
-} from '../data/mockData';
 import { OBSERVATION_TYPES } from '../data/observationData';
 import { observationService } from './observationService';
 import tasksApi from './api/tasksApi.js';
@@ -43,26 +31,24 @@ const setStorageItem = (key, value) => {
 /**
  * ORBIT API Service Abstraction
  * Designed to return Promise-based async responses.
- * Easily swappable with backend REST endpoints later.
  */
 export const api = {
   // Fetch Dashboard State
   getDashboard: async () => {
     const sessions = getStorageItem(STORAGE_KEYS.SESSIONS, []);
-    const focus = getStorageItem(STORAGE_KEYS.FOCUS, mockFocus);
+    const focus = getStorageItem(STORAGE_KEYS.FOCUS, { current: 0, change: 0 });
     const petState = getStorageItem(STORAGE_KEYS.PET, 'idle');
-    const tasks = getStorageItem(STORAGE_KEYS.TASKS, mockTasks);
+    const tasks = getStorageItem(STORAGE_KEYS.TASKS, []);
 
     return {
-      user: mockUser,
       tasks,
       focus,
-      weeklyProductivity: mockWeeklyProductivity,
-      goal: mockGoal,
-      recovery: mockRecovery,
-      insights: mockInsights,
-      memories: mockMemories,
-      protocol: mockProtocol,
+      weeklyProductivity: [],
+      goal: null,
+      recovery: null,
+      insights: [],
+      memories: [],
+      protocol: null,
       petState,
       completedSessions: sessions,
     };
@@ -82,8 +68,8 @@ export const api = {
         difficulty: t.difficulty || 'medium',
       }));
     } catch (err) {
-      console.warn('[API Service] Backend tasks fetch fallback to local storage:', err.message);
-      return getStorageItem(STORAGE_KEYS.TASKS, mockTasks);
+      console.warn('[API Service] Backend tasks fetch error:', err.message);
+      return getStorageItem(STORAGE_KEYS.TASKS, []);
     }
   },
 
@@ -107,7 +93,7 @@ export const api = {
       };
     } catch (err) {
       console.warn('[API Service] Backend task creation fallback:', err.message);
-      const tasks = getStorageItem(STORAGE_KEYS.TASKS, mockTasks);
+      const tasks = getStorageItem(STORAGE_KEYS.TASKS, []);
       newTask = {
         id: Date.now(),
         title: taskData.title || 'Untitled Task',
@@ -228,9 +214,9 @@ export const api = {
     const existingSessions = getStorageItem(STORAGE_KEYS.SESSIONS, []);
     const newSession = {
       id: Date.now(),
-      duration: sessionData.duration || 45,
+      duration: sessionData.duration || sessionData.plannedDurationMinutes || 45,
       focusScore: sessionData.focusScore || 85,
-      taskTitle: sessionData.taskTitle || "DAA — Graph Algorithms",
+      taskTitle: sessionData.taskTitle || "Focus Session",
       completedAt: new Date().toISOString(),
     };
     
@@ -238,7 +224,7 @@ export const api = {
     setStorageItem(STORAGE_KEYS.SESSIONS, updatedSessions);
 
     // Update Focus Trend and Score
-    const currentFocus = getStorageItem(STORAGE_KEYS.FOCUS, mockFocus);
+    const currentFocus = getStorageItem(STORAGE_KEYS.FOCUS, { current: 0, change: 0 });
     const updatedFocus = {
       ...currentFocus,
       current: Math.min(100, currentFocus.current + 3),

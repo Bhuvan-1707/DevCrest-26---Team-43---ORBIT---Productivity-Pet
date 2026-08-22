@@ -32,32 +32,6 @@ export default function Memory() {
       const res = await memoryApi.getMemories();
       let fetched = res?.data || res || [];
       if (!Array.isArray(fetched)) fetched = [];
-
-      // Auto-seed initial baseline memories for new users if completely empty
-      if (fetched.length === 0) {
-        const defaultSeeds = [
-          { type: 'live', contentText: 'Active Focus: DAA Graph Algorithms', category: 'Active Session', confidenceRating: 'High' },
-          { type: 'live', contentText: 'Completed BFS practice set (5/5)', category: 'Task Telemetry', confidenceRating: 'High' },
-          { type: 'trusted', contentText: '45-minute focus blocks yield highest completion rate', category: 'Protocol Standard', confidenceRating: 'High (84%)', isValidated: true },
-          { type: 'trusted', contentText: 'Retrieval practice method optimal for algorithm retention', category: 'Protocol Standard', confidenceRating: 'Medium-High (78%)', isValidated: true },
-          { type: 'evidence', contentText: 'Completed DFS graph problems', category: 'Session Outcome', sessionDate: new Date().toISOString().split('T')[0], focusScore: 84 },
-          { type: 'evidence', contentText: 'Completed Binary Search practice', category: 'Session Outcome', sessionDate: new Date(Date.now() - 86400000).toISOString().split('T')[0], focusScore: 79 },
-        ];
-
-        const createdSeeds = [];
-        for (const seed of defaultSeeds) {
-          try {
-            const created = await memoryApi.createMemory(seed);
-            if (created?.data) createdSeeds.push(created.data);
-          } catch (e) {
-            console.error('[Memory Page] Seed creation error:', e);
-          }
-        }
-        if (createdSeeds.length > 0) {
-          fetched = createdSeeds;
-        }
-      }
-
       setMemories(fetched);
     } catch (err) {
       console.error('[Memory Page] Error loading memories:', err);
@@ -150,16 +124,16 @@ export default function Memory() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
-            <Database size={20} className="text-cyan-400" />
-            <span className="text-xs font-bold uppercase tracking-widest text-cyan-400 font-heading">
+            <Database size={20} className="text-sky-600 dark:text-cyan-400" />
+            <span className="text-xs font-bold uppercase tracking-widest text-indigo-600 dark:text-cyan-400 font-heading">
               INTELLIGENCE MEMORY VAULT
             </span>
           </div>
-          <h1 className="text-3xl font-extrabold text-slate-100 font-heading tracking-tight">
+          <h1 className="text-3xl font-extrabold text-slate-900 dark:text-slate-100 font-heading tracking-tight">
             Three-Tier Cognitive Memory System
           </h1>
-          <p className="text-sm text-slate-400 max-w-3xl font-sans">
-            ORBIT separates telemetry into operational context (<strong className="text-slate-200">Live</strong>), validated behavioral rules (<strong className="text-slate-200">Trusted</strong>), and historical execution logs (<strong className="text-slate-200">Evidence</strong>).
+          <p className="text-sm text-slate-600 dark:text-slate-400 max-w-3xl font-sans">
+            ORBIT separates telemetry into operational context (<strong className="text-slate-800 dark:text-slate-200">Live</strong>), validated behavioral rules (<strong className="text-slate-800 dark:text-slate-200">Trusted</strong>), and historical execution logs (<strong className="text-slate-800 dark:text-slate-200">Evidence</strong>).
           </p>
         </div>
 
@@ -175,7 +149,7 @@ export default function Memory() {
 
       {/* Error State Banner */}
       {error && (
-        <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs flex items-center gap-2">
+        <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 dark:text-rose-300 text-xs flex items-center gap-2">
           <AlertCircle size={15} />
           <span>{error}</span>
         </div>
@@ -184,18 +158,18 @@ export default function Memory() {
       {/* Add Memory Form */}
       {showAddForm && (
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-          <Card className="orbit-card p-6 border-cyan-500/30">
-            <h3 className="text-sm font-bold text-slate-100 font-heading mb-4">
+          <Card className="orbit-card p-6 border-indigo-500/30">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 font-heading mb-4">
               Record New Memory Entry
             </h3>
             <form onSubmit={handleCreateMemory} className="flex flex-col gap-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="text-xs font-semibold text-slate-300 mb-1 block">Memory Tier</label>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Memory Tier</label>
                   <select
                     value={memType}
                     onChange={e => setMemType(e.target.value)}
-                    className="w-full bg-[#07090e] border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-cyan-500"
+                    className="w-full bg-white dark:bg-[#07090e] border border-slate-300 dark:border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:border-indigo-500"
                   >
                     <option value="live">Live Operational Context</option>
                     <option value="trusted">Trusted Protocol Rule</option>
@@ -203,17 +177,17 @@ export default function Memory() {
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs font-semibold text-slate-300 mb-1 block">Category</label>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Category</label>
                   <input
                     type="text"
                     value={category}
                     onChange={e => setCategory(e.target.value)}
                     placeholder="e.g. Active Session / Protocol"
-                    className="w-full bg-[#07090e] border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500"
+                    className="w-full bg-white dark:bg-[#07090e] border border-slate-300 dark:border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-semibold text-slate-300 mb-1 block">Confidence / Focus Rating</label>
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Confidence / Focus Rating</label>
                   {memType === 'evidence' ? (
                     <input
                       type="number"
@@ -221,7 +195,7 @@ export default function Memory() {
                       max="100"
                       value={focusScore}
                       onChange={e => setFocusScore(e.target.value)}
-                      className="w-full bg-[#07090e] border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-cyan-500"
+                      className="w-full bg-white dark:bg-[#07090e] border border-slate-300 dark:border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:border-indigo-500"
                     />
                   ) : (
                     <input
@@ -229,21 +203,21 @@ export default function Memory() {
                       value={confidenceRating}
                       onChange={e => setConfidenceRating(e.target.value)}
                       placeholder="e.g. High (85%)"
-                      className="w-full bg-[#07090e] border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-cyan-500"
+                      className="w-full bg-white dark:bg-[#07090e] border border-slate-300 dark:border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:border-indigo-500"
                     />
                   )}
                 </div>
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-slate-300 mb-1 block">Memory Detail Text</label>
+                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Memory Detail Text</label>
                 <input
                   type="text"
                   required
                   value={contentText}
                   onChange={e => setContentText(e.target.value)}
                   placeholder="Record observed context or rule..."
-                  className="w-full bg-[#07090e] border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-cyan-500"
+                  className="w-full bg-white dark:bg-[#07090e] border border-slate-300 dark:border-slate-700/80 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"
                 />
               </div>
 
@@ -261,19 +235,19 @@ export default function Memory() {
       )}
 
       {/* Memory Layer Navigation Tabs */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-3 p-1.5 rounded-2xl bg-slate-950/70 border border-slate-800/80">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-3 p-1.5 rounded-2xl bg-slate-200/60 dark:bg-slate-950/70 border border-slate-300/80 dark:border-slate-800/80">
         <button
           onClick={() => setActiveLayer('all')}
-          className={`py-3 px-4 rounded-xl text-xs font-bold font-heading transition-all flex items-center justify-between ${
+          className={`py-3 px-4 rounded-xl text-xs font-bold font-heading transition-all flex items-center justify-between cursor-pointer ${
             activeLayer === 'all'
-              ? 'bg-gradient-to-r from-indigo-600/30 via-cyan-600/30 to-indigo-600/20 text-slate-100 border border-cyan-500/40 shadow-lg'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/40'
+              ? 'bg-white dark:bg-gradient-to-r dark:from-indigo-600/30 dark:via-cyan-600/30 dark:to-indigo-600/20 text-indigo-600 dark:text-slate-100 border border-slate-200 dark:border-cyan-500/40 shadow-xs'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900/40'
           }`}
         >
           <span className="flex items-center gap-2">
             <Sparkles size={15} /> All Memory Layers
           </span>
-          <span className="px-2 py-0.5 rounded-md bg-slate-800 text-[10px] font-bold text-slate-300">
+          <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-700 dark:text-slate-300">
             {memories.length}
           </span>
         </button>
@@ -285,17 +259,17 @@ export default function Memory() {
             <button
               key={layer.id}
               onClick={() => setActiveLayer(layer.id)}
-              className={`py-3 px-4 rounded-xl text-xs font-bold font-heading transition-all flex items-center justify-between ${
+              className={`py-3 px-4 rounded-xl text-xs font-bold font-heading transition-all flex items-center justify-between cursor-pointer ${
                 isActive
-                  ? 'bg-gradient-to-r from-indigo-600/30 via-cyan-600/30 to-indigo-600/20 text-slate-100 border border-cyan-500/40 shadow-lg'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/40'
+                  ? 'bg-white dark:bg-gradient-to-r dark:from-indigo-600/30 dark:via-cyan-600/30 dark:to-indigo-600/20 text-indigo-600 dark:text-slate-100 border border-slate-200 dark:border-cyan-500/40 shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900/40'
               }`}
             >
               <span className="flex items-center gap-2">
-                <Icon size={15} className={isActive ? 'text-cyan-400' : 'text-slate-400'} />
+                <Icon size={15} className={isActive ? 'text-indigo-600 dark:text-cyan-400' : 'text-slate-400'} />
                 {layer.title}
               </span>
-              <span className="px-2 py-0.5 rounded-md bg-slate-800 text-[10px] font-bold text-slate-300">
+              <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-700 dark:text-slate-300">
                 {layer.count}
               </span>
             </button>
@@ -306,14 +280,14 @@ export default function Memory() {
       {/* Loading State */}
       {loading ? (
         <div className="flex justify-center py-16">
-          <div className="w-8 h-8 border-2 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin"></div>
+          <div className="w-8 h-8 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin"></div>
         </div>
       ) : memories.length === 0 ? (
         /* Empty State */
         <Card className="orbit-card p-12 text-center flex flex-col items-center">
-          <Database size={32} className="text-slate-600 mb-3" />
-          <h3 className="text-sm font-semibold text-slate-300">Cognitive Memory Vault Empty</h3>
-          <p className="text-xs text-slate-500 mt-1 max-w-sm">
+          <Database size={32} className="text-slate-400 dark:text-slate-600 mb-3" />
+          <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300">Cognitive Memory Vault Empty</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm">
             Record your first operational context, validated rule, or session log.
           </p>
         </Card>
@@ -327,16 +301,16 @@ export default function Memory() {
               animate={{ opacity: 1, y: 0 }}
               className="flex flex-col gap-4"
             >
-              <div className="flex items-center justify-between pb-2 border-b border-slate-800/80">
+              <div className="flex items-center justify-between pb-2 border-b border-slate-200/80 dark:border-slate-800/80">
                 <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                  <div className="p-2 rounded-xl bg-sky-50 dark:bg-cyan-500/10 text-sky-600 dark:text-cyan-400 border border-sky-200 dark:border-cyan-500/20">
                     <Radio size={18} className="animate-pulse" />
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-slate-100 font-heading">
+                    <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 font-heading">
                       Live Memory (Operational Stream)
                     </h3>
-                    <p className="text-xs text-slate-400">Short-term working context active right now</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">Short-term working context active right now</p>
                   </div>
                 </div>
                 <Badge variant="live" pulse>
@@ -345,7 +319,7 @@ export default function Memory() {
               </div>
 
               {liveMemories.length === 0 ? (
-                <div className="text-xs text-slate-500 italic p-4 bg-slate-900/30 rounded-xl border border-slate-800/40">
+                <div className="text-xs text-slate-500 dark:text-slate-400 italic p-4 bg-slate-50 dark:bg-slate-900/30 rounded-xl border border-slate-200 dark:border-slate-800/40">
                   No active Live Operational Memory logs.
                 </div>
               ) : (
@@ -353,24 +327,24 @@ export default function Memory() {
                   {liveMemories.map((item) => (
                     <Card 
                       key={item.id}
-                      className="orbit-card bg-gradient-to-br from-[#0c1220]/90 to-[#0a0d18]/80 border-cyan-500/20 hover:border-cyan-500/40 transition-all flex flex-col justify-between"
+                      className="orbit-card bg-gradient-to-br from-sky-50/80 via-white to-indigo-50/40 dark:from-[#0c1220]/90 dark:to-[#0a0d18]/80 border-sky-200 dark:border-cyan-500/20 hover:border-sky-300 dark:hover:border-cyan-500/40 transition-all flex flex-col justify-between"
                     >
                       <div className="flex flex-col gap-2">
                         <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-400">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-sky-700 dark:text-cyan-400">
                             {item.category || 'Active Session'}
                           </span>
-                          <span className="text-[10px] text-slate-400 flex items-center gap-1">
+                          <span className="text-[10px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
                             <Clock size={11} /> {formatRelativeTime(item.created_at)}
                           </span>
                         </div>
-                        <p className="text-sm font-semibold text-slate-100 mt-1">
+                        <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 mt-1">
                           {item.content_text || item.text}
                         </p>
                       </div>
-                      <div className="mt-4 pt-2 border-t border-slate-800/60 flex items-center justify-between text-[10px] text-slate-400">
+                      <div className="mt-4 pt-2 border-t border-slate-200/80 dark:border-slate-800/60 flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400">
                         <span>Memory ID: L-{item.id}</span>
-                        <span className="text-cyan-400 font-medium">Volatile Context</span>
+                        <span className="text-sky-600 dark:text-cyan-400 font-medium">Volatile Context</span>
                       </div>
                     </Card>
                   ))}
@@ -386,16 +360,16 @@ export default function Memory() {
               animate={{ opacity: 1, y: 0 }}
               className="flex flex-col gap-4"
             >
-              <div className="flex items-center justify-between pb-2 border-b border-slate-800/80">
+              <div className="flex items-center justify-between pb-2 border-b border-slate-200/80 dark:border-slate-800/80">
                 <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  <div className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/20">
                     <ShieldCheck size={18} />
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-slate-100 font-heading">
+                    <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 font-heading">
                       Trusted Memory (Validated Rules)
                     </h3>
-                    <p className="text-xs text-slate-400">High-confidence principles proven through telemetry</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">High-confidence principles proven through telemetry</p>
                   </div>
                 </div>
                 <Badge variant="trusted">
@@ -404,7 +378,7 @@ export default function Memory() {
               </div>
 
               {trustedMemories.length === 0 ? (
-                <div className="text-xs text-slate-500 italic p-4 bg-slate-900/30 rounded-xl border border-slate-800/40">
+                <div className="text-xs text-slate-500 dark:text-slate-400 italic p-4 bg-slate-50 dark:bg-slate-900/30 rounded-xl border border-slate-200 dark:border-slate-800/40">
                   No validated Trusted Protocol Rules recorded yet.
                 </div>
               ) : (
@@ -412,24 +386,24 @@ export default function Memory() {
                   {trustedMemories.map((item) => (
                     <Card 
                       key={item.id}
-                      className="orbit-card bg-gradient-to-br from-[#0a1814]/90 to-[#091217]/80 border-emerald-500/25 hover:border-emerald-500/40 transition-all flex flex-col justify-between"
+                      className="orbit-card bg-gradient-to-br from-emerald-50/80 via-white to-teal-50/30 dark:from-[#0a1814]/90 dark:to-[#091217]/80 border-emerald-200 dark:border-emerald-500/25 hover:border-emerald-300 dark:hover:border-emerald-500/40 transition-all flex flex-col justify-between"
                     >
                       <div className="flex flex-col gap-2">
                         <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 flex items-center gap-1">
                             <CheckCircle2 size={12} /> Validated Rule
                           </span>
                           <Badge variant="emerald" size="sm">
                             {item.confidence_rating || item.confidence || 'High (80%)'}
                           </Badge>
                         </div>
-                        <p className="text-sm font-semibold text-slate-100 mt-1">
+                        <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 mt-1">
                           "{item.content_text || item.text}"
                         </p>
                       </div>
-                      <div className="mt-4 pt-2 border-t border-slate-800/60 flex items-center justify-between text-[10px] text-slate-400">
+                      <div className="mt-4 pt-2 border-t border-slate-200/80 dark:border-slate-800/60 flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400">
                         <span>Rule Ref: T-{item.id}</span>
-                        <span className="text-emerald-400 font-medium">Protocol Standard</span>
+                        <span className="text-emerald-600 dark:text-emerald-400 font-medium">Protocol Standard</span>
                       </div>
                     </Card>
                   ))}
@@ -445,16 +419,16 @@ export default function Memory() {
               animate={{ opacity: 1, y: 0 }}
               className="flex flex-col gap-4"
             >
-              <div className="flex items-center justify-between pb-2 border-b border-slate-800/80">
+              <div className="flex items-center justify-between pb-2 border-b border-slate-200/80 dark:border-slate-800/80">
                 <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                  <div className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20">
                     <History size={18} />
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-slate-100 font-heading">
+                    <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 font-heading">
                       Evidence Memory (Historical Logs)
                     </h3>
-                    <p className="text-xs text-slate-400">Recorded focus telemetry and outcome data</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">Recorded focus telemetry and outcome data</p>
                   </div>
                 </div>
                 <Badge variant="evidence">
@@ -463,7 +437,7 @@ export default function Memory() {
               </div>
 
               {evidenceMemories.length === 0 ? (
-                <div className="text-xs text-slate-500 italic p-4 bg-slate-900/30 rounded-xl border border-slate-800/40">
+                <div className="text-xs text-slate-500 dark:text-slate-400 italic p-4 bg-slate-50 dark:bg-slate-900/30 rounded-xl border border-slate-200 dark:border-slate-800/40">
                   No historical Evidence Session logs recorded yet.
                 </div>
               ) : (
@@ -471,20 +445,20 @@ export default function Memory() {
                   {evidenceMemories.map((item) => (
                     <Card 
                       key={item.id}
-                      className="orbit-card bg-gradient-to-br from-[#0f1426]/90 to-[#0b0e1b]/80 border-indigo-500/20 hover:border-indigo-500/40 transition-all flex flex-col justify-between"
+                      className="orbit-card bg-gradient-to-br from-indigo-50/80 via-white to-slate-50 dark:from-[#0f1426]/90 dark:to-[#0b0e1b]/80 border-indigo-200 dark:border-indigo-500/20 hover:border-indigo-300 dark:hover:border-indigo-500/40 transition-all flex flex-col justify-between"
                     >
                       <div className="flex flex-col gap-2.5">
                         <div className="flex items-center justify-between text-xs">
-                          <span className="text-slate-400 flex items-center gap-1">
+                          <span className="text-slate-500 dark:text-slate-400 flex items-center gap-1">
                             <Calendar size={12} /> {item.session_date || item.sessionDate || 'Recent'}
                           </span>
-                          <span className="font-bold text-cyan-300">45 min</span>
+                          <span className="font-bold text-indigo-600 dark:text-cyan-300">45 min</span>
                         </div>
 
                         <div className="flex flex-col gap-1 my-1">
                           <div className="flex items-center justify-between text-[11px]">
-                            <span className="text-slate-400 font-medium">Focus Rating</span>
-                            <span className="font-bold text-indigo-300">{item.focus_score || item.focusScore || 85} / 100</span>
+                            <span className="text-slate-500 dark:text-slate-400 font-medium">Focus Rating</span>
+                            <span className="font-bold text-indigo-700 dark:text-indigo-300">{item.focus_score || item.focusScore || 85} / 100</span>
                           </div>
                           <ProgressBar
                             value={item.focus_score || item.focusScore || 85}
@@ -493,14 +467,14 @@ export default function Memory() {
                           />
                         </div>
 
-                        <p className="text-xs text-slate-200 font-medium line-clamp-2">
+                        <p className="text-xs text-slate-800 dark:text-slate-200 font-medium line-clamp-2">
                           {item.content_text || item.outcome || 'Focus telemetry log'}
                         </p>
                       </div>
 
-                      <div className="mt-3 pt-2 border-t border-slate-800/60 flex items-center justify-between text-[10px] text-slate-400">
+                      <div className="mt-3 pt-2 border-t border-slate-200/80 dark:border-slate-800/60 flex items-center justify-between text-[10px] text-slate-500 dark:text-slate-400">
                         <span>Telemetry Log: E-{item.id}</span>
-                        <span className="text-slate-400 font-mono">Immutable</span>
+                        <span className="text-slate-500 dark:text-slate-400 font-mono">Immutable</span>
                       </div>
                     </Card>
                   ))}
